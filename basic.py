@@ -146,7 +146,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                 "type": "static_select",
                                 "placeholder": {
                                     "type": "plain_text",
-                                    "text": "Select rating",
+                                    "text": "Rate visibility",
                                     "emoji": True
                                 },
                                 "options": [
@@ -206,7 +206,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                 "type": "static_select",
                                 "placeholder": {
                                     "type": "plain_text",
-                                    "text": "Select an item",
+                                    "text": "Rate impact",
                                     "emoji": True
                                 },
                                 "options": [
@@ -352,7 +352,7 @@ def view_submission(ack, client, body, view, logger):
     item_id = r_json["data"]["create_item"]["id"] # save item id
 
     # create update within newly created item
-    body = "\""+"Description\n "+bug_file.description+"\n"+"Visibility\n "+str(bug_file.vis)+"\n"+"Impact\n "+str(bug_file.impact)+"\n"+"To Reproduce\n "+bug_file.to_reproduce+"\n"+"Expected behavior\n "+bug_file.expected+"\n"+"Configuration\n "+bug_file.config+"\""
+    body = "\""+"<p><strong>Description</strong></p>"+bug_file.description+"<p><strong>Visibility</strong></p>"+str(bug_file.vis)+"<p><strong>Impact</strong></p>"+str(bug_file.impact)+"<p><strong>To Reproduce</strong></p>"+bug_file.to_reproduce+"<p><strong>Expected behavior</strong></p>"+bug_file.expected+"<p><strong>Configuration</strong></p>"+bug_file.config+"\""
     print(body)
 
     create_update = 'mutation { create_update (item_id:'+item_id+', body:'+body+') { id } }'
