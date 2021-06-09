@@ -1,8 +1,11 @@
+from logging import setLoggerClass
 import os
 from slack_bolt import App
 from slack_sdk.errors import SlackApiError
 import requests
 import json
+from bug import Bug
+from util import get_value, get_text
 
 # slack stuff
 # Initializes your app with your bot token and signing secret
@@ -82,7 +85,7 @@ def open_modal(ack, shortcut, client, logger, body):
                             "type": "input",
                             "block_id":"site",
                             "element": {
-                                "type": "multi_static_select",
+                                "type": "static_select",
                                 "placeholder": {
                                     "type": "plain_text",
                                     "text": "Select site",
@@ -95,7 +98,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                             "text": "multidocs",
                                             "emoji": True
                                         },
-                                        "value": "multidocs"
+                                        "value": "Multidocs"
                                     },
                                     {
                                         "text": {
@@ -103,7 +106,15 @@ def open_modal(ack, shortcut, client, logger, body):
                                             "text": "platform",
                                             "emoji": True
                                         },
-                                        "value": "platform"
+                                        "value": "Platform"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "both",
+                                            "emoji": True
+                                        },
+                                        "value": "Both"
                                     }
                                 ],
                                 "action_id": "site-action"
@@ -142,7 +153,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":one: (login/signup, docs - getting started, access key management)",
+                                            "text": "1️⃣ (login/signup, docs - getting started, access key management)",
                                             "emoji": True
                                         },
                                         "value": "1"
@@ -150,7 +161,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":two: clicks away",
+                                            "text": "2️⃣ clicks away",
                                             "emoji": True
                                         },
                                         "value": "2"
@@ -158,7 +169,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":three: clicks away",
+                                            "text": "3️⃣ clicks away",
                                             "emoji": True
                                         },
                                         "value": "3"
@@ -166,7 +177,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":four: clicks away",
+                                            "text": "4️⃣ clicks away",
                                             "emoji": True
                                         },
                                         "value": "4"
@@ -174,7 +185,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":five: clicks away",
+                                            "text": "5️⃣ clicks away",
                                             "emoji": True
                                         },
                                         "value": "5"
@@ -202,7 +213,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":five: Huge (angry, pain, crying, $10^5 ARR)",
+                                            "text": "5️⃣ Huge (angry, pain, crying, $10^5 ARR)",
                                             "emoji": True
                                         },
                                         "value": "5"
@@ -210,7 +221,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":four: Large (anger, dismay, swearing, $10^4 ARR)",
+                                            "text": "4️⃣ Large (anger, dismay, swearing, $10^4 ARR)",
                                             "emoji": True
                                         },
                                         "value": "4"
@@ -218,7 +229,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":three: Big (frustration, annoyance, $10^3 ARR)",
+                                            "text": "3️⃣ Big (frustration, annoyance, $10^3 ARR)",
                                             "emoji": True
                                         },
                                         "value": "3"
@@ -226,7 +237,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":two: Medium (eye-rolling, $10^2 ARR)",
+                                            "text": "2️⃣ Medium (eye-rolling, $10^2 ARR)",
                                             "emoji": True
                                         },
                                         "value": "2"
@@ -234,7 +245,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": ":one: Small (may make you laugh instead of cry, $10^1 ARR)",
+                                            "text": "1️⃣ Small (may make you laugh instead of cry, $10^1 ARR)",
                                             "emoji": True
                                         },
                                         "value": "1"
@@ -302,9 +313,53 @@ def open_modal(ack, shortcut, client, logger, body):
 @app.view("view-id")
 def view_submission(ack, client, body, view, logger):
     ack()
-    for value in body["view"]["state"]["values"]:
-        print(value, " ", body["view"]["state"]["values"][value], "\n")
-    
+
+    user = body["user"]["id"]
+    blocks = body["view"]["state"]["values"]
+
+    bug_file = Bug()
+    bug_file.site = get_value('site', 'site-action', blocks)
+    bug_file.description = get_value('bug-description', 'bug-description-action', blocks)
+    bug_file.vis = int(get_value('visibility','visibility-action', blocks))
+    bug_file.impact = int(get_value('impact', 'impact-action', blocks))
+    bug_file.to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
+    bug_file.expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
+    bug_file.config = get_value('config', 'config-action', blocks)
+
+    # monday stuff
+    api_key = os.environ.get("MONDAY_API_KEY")
+    board_id = os.environ.get("BOARD_ID")
+
+    apiUrl = "https://api.monday.com/v2"
+    headers = {"Authorization" : api_key}
+
+    # create item with bug file information
+    print("bug_file.description", bug_file.description, type(bug_file.description))
+
+    create_item = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
+    vars = {
+        'myItemName' : bug_file.description,
+        'columnVals' : json.dumps({
+            'status_11' : {'label' : bug_file.site},
+            'numbers' : bug_file.vis,
+            'numbers0' : bug_file.impact
+        })
+    }
+    new_item = {'query' : create_item, 'variables' : vars}
+    r = requests.post(url=apiUrl, json=new_item, headers=headers) # make request
+    r_json = r.json()
+    print(r_json)
+    item_id = r_json["data"]["create_item"]["id"] # save item id
+
+    # create update within newly created item
+    body = "\""+"Description\n "+bug_file.description+"\n"+"Visibility\n "+str(bug_file.vis)+"\n"+"Impact\n "+str(bug_file.impact)+"\n"+"To Reproduce\n "+bug_file.to_reproduce+"\n"+"Expected behavior\n "+bug_file.expected+"\n"+"Configuration\n "+bug_file.config+"\""
+    print(body)
+
+    create_update = 'mutation { create_update (item_id:'+item_id+', body:'+body+') { id } }'
+    new_update = {'query' : create_update}
+    r = requests.post(url=apiUrl, json=new_update, headers=headers) # make request
+    print(r.json())
+
 # Start your app
 if __name__ == "__main__":
     app.start(port=int(os.environ.get("PORT", 3000)))
