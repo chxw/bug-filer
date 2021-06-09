@@ -1,5 +1,4 @@
 import os
-# Use the package we installed
 from slack_bolt import App
 from slack_sdk.errors import SlackApiError
 import requests
@@ -81,6 +80,7 @@ def open_modal(ack, shortcut, client, logger, body):
                         },
                         {
                             "type": "input",
+                            "block_id":"site",
                             "element": {
                                 "type": "multi_static_select",
                                 "placeholder": {
@@ -95,7 +95,7 @@ def open_modal(ack, shortcut, client, logger, body):
                                             "text": "multidocs",
                                             "emoji": True
                                         },
-                                        "value": "value-0"
+                                        "value": "multidocs"
                                     },
                                     {
                                         "text": {
@@ -103,10 +103,10 @@ def open_modal(ack, shortcut, client, logger, body):
                                             "text": "platform",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "platform"
                                     }
                                 ],
-                                "action_id": "static_select-action"
+                                "action_id": "site-action"
                             },
                             "label": {
                                 "type": "plain_text",
@@ -116,6 +116,7 @@ def open_modal(ack, shortcut, client, logger, body):
                         },
                         {
                             "type": "input",
+                            "block_id":"bug-description",
                             "label": {
                                 "type": "plain_text",
                                 "text": "Describe the bug",
@@ -123,61 +124,63 @@ def open_modal(ack, shortcut, client, logger, body):
                             },
                             "element": {
                                 "type": "plain_text_input",
-                                "multiline": True
+                                "multiline": True,
+                                "action_id": "bug-description-action"
                             }
                         },
                         {
                             "type": "input",
+                            "block_id":"visibility",
                             "element": {
                                 "type": "static_select",
                                 "placeholder": {
                                     "type": "plain_text",
-                                    "text": "Select an item",
+                                    "text": "Select rating",
                                     "emoji": True
                                 },
                                 "options": [
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "1️⃣ (login/signup, docs - getting started, access key management)",
+                                            "text": ":one: (login/signup, docs - getting started, access key management)",
                                             "emoji": True
                                         },
-                                        "value": "value-0"
+                                        "value": "1"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "2️⃣ clicks away",
+                                            "text": ":two: clicks away",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "2"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "3️⃣ clicks away",
+                                            "text": ":three: clicks away",
                                             "emoji": True
                                         },
-                                        "value": "value-2"
+                                        "value": "3"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "4️⃣ clicks away",
+                                            "text": ":four: clicks away",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "4"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "5️⃣ clicks away",
+                                            "text": ":five: clicks away",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "5"
                                     }
                                 ],
-                                "action_id": "static_select-action"
+                                "action_id": "visibility-action"
                             },
                             "label": {
                                 "type": "plain_text",
@@ -187,6 +190,7 @@ def open_modal(ack, shortcut, client, logger, body):
                         },
                         {
                             "type": "input",
+                            "block_id":"impact",
                             "element": {
                                 "type": "static_select",
                                 "placeholder": {
@@ -198,45 +202,45 @@ def open_modal(ack, shortcut, client, logger, body):
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "5️⃣ Huge (angry, pain, crying, $10^5 ARR)",
+                                            "text": ":five: Huge (angry, pain, crying, $10^5 ARR)",
                                             "emoji": True
                                         },
-                                        "value": "value-0"
+                                        "value": "5"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "4️⃣ Large (anger, dismay, swearing, $10^4 ARR)",
+                                            "text": ":four: Large (anger, dismay, swearing, $10^4 ARR)",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "4"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "3️⃣ Big (frustration, annoyance, $10^3 ARR)",
+                                            "text": ":three: Big (frustration, annoyance, $10^3 ARR)",
                                             "emoji": True
                                         },
-                                        "value": "value-2"
+                                        "value": "3"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "2️⃣ Medium (eye-rolling, $10^2 ARR)",
+                                            "text": ":two: Medium (eye-rolling, $10^2 ARR)",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "2"
                                     },
                                     {
                                         "text": {
                                             "type": "plain_text",
-                                            "text": "1️⃣ Small (may make you laugh instead of cry, $10^1 ARR)",
+                                            "text": ":one: Small (may make you laugh instead of cry, $10^1 ARR)",
                                             "emoji": True
                                         },
-                                        "value": "value-1"
+                                        "value": "1"
                                     }
                                 ],
-                                "action_id": "static_select-action"
+                                "action_id": "impact-action"
                             },
                             "label": {
                                 "type": "plain_text",
@@ -246,6 +250,7 @@ def open_modal(ack, shortcut, client, logger, body):
                         },
                         {
                             "type": "input",
+                            "block_id":"how-to-reproduce",
                             "label": {
                                 "type": "plain_text",
                                 "text": "To Reproduce",
@@ -253,11 +258,13 @@ def open_modal(ack, shortcut, client, logger, body):
                             },
                             "element": {
                                 "type": "plain_text_input",
-                                "multiline": True
+                                "multiline": True,
+                                "action_id": "how-to-reproduce-action"
                             }
                         },
                         {
                             "type": "input",
+                            "block_id":"expected-behavior",
                             "label": {
                                 "type": "plain_text",
                                 "text": "Expected behavior",
@@ -265,11 +272,13 @@ def open_modal(ack, shortcut, client, logger, body):
                             },
                             "element": {
                                 "type": "plain_text_input",
-                                "multiline": True
+                                "multiline": True,
+                                "action_id": "expected-behavior-action"
                             }
                         },
                         {
                             "type": "input",
+                            "block_id":"config",
                             "label": {
                                 "type": "plain_text",
                                 "text": "Configuration (e.g. browser type, screen size, device)",
@@ -277,7 +286,8 @@ def open_modal(ack, shortcut, client, logger, body):
                             },
                             "element": {
                                 "type": "plain_text_input",
-                                "multiline": False
+                                "multiline": False,
+                                "action_id": "config-action"
                             },
                             "optional": True
                         }
@@ -285,15 +295,16 @@ def open_modal(ack, shortcut, client, logger, body):
                 }
             )
         logger.info(api_response)
+        
     except SlackApiError as e:
         logger.error("Error creating conversation: {}".format(e))
 
 @app.view("view-id")
-def view_submission(ack, body, logger):
+def view_submission(ack, client, body, view, logger):
     ack()
-    logger.info(body["view"]["state"]["values"])
+    for value in body["view"]["state"]["values"]:
+        print(value, " ", body["view"]["state"]["values"][value], "\n")
     
 # Start your app
 if __name__ == "__main__":
-    print("SLACK_BOT_TOKEN:", os.environ.get("SLACK_BOT_TOKEN"))
     app.start(port=int(os.environ.get("PORT", 3000)))
