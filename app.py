@@ -10,7 +10,7 @@ from slack_sdk import WebClient
 from slack_sdk.web import SlackResponse
 
 from slack_bolt import App, Ack
-from slack_bolt.workflows.step import Configure, Update, Complete, Fail, Wor
+from slack_bolt.workflows.step import Configure, Update, Complete, Fail, WorkflowStep
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -291,4 +291,3 @@ app.step(ws)
 # Start your app
 if __name__ == "__main__":
     app.start(3000)
-    
