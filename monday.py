@@ -41,10 +41,10 @@ def create_item(site, description, visibility, impact):
     except KeyError as e:
         print("Error creating monday item {0}".format(e))
 
-def create_update(user, site, description, visibility, impact, to_reproduce, expected, config, item_id):
+def create_update(user, site, description, visibility_text, impact_text, to_reproduce, expected, config, item_id):
     headers = {"Authorization" : api_key}
 
-    body = json.dumps("<p><strong>Describe the bug</strong></p>"+description+"<p></p><p><strong>Visibility</strong></p>"+str(visibility)+"<p></p><p><strong>Impact</strong></p>"+str(impact)+"<p></p><p><strong>To Reproduce</strong></p>"+to_reproduce+"<p></p><p><strong>Expected behavior</strong></p>"+expected+"<p></p><p><strong>Configuration (e.g. browser type, screen size, device)</strong></p>"+config+"<p></p><p><strong>Filed by</strong></p>"+user)
+    body = json.dumps("<p><strong>Describe the bug</strong></p>"+description+"<p></p><p><strong>Visibility</strong></p>"+visibility_text+"<p></p><p><strong>Impact</strong></p>"+impact_text+"<p></p><p><strong>To Reproduce</strong></p>"+to_reproduce+"<p></p><p><strong>Expected behavior</strong></p>"+expected+"<p></p><p><strong>Configuration (e.g. browser type, screen size, device)</strong></p>"+config+"<p></p><p><strong>Filed by</strong></p>"+user)
 
     mutate_query = 'mutation { create_update (item_id:'+item_id+', body:'+body+') { id } }'
     new_update = {'query' : mutate_query}

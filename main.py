@@ -52,7 +52,7 @@ def view_submission(ack, client, body, view, logger):
 
         # create monday item
         item_id = create_item(site, description, visibility, impact)
-        url = create_update(user, site, description, visibility, impact, to_reproduce, expected, config, item_id)
+        url = create_update(user, site, description, visibility_text, impact_text, to_reproduce, expected, config, item_id)
 
         # send message to channel
         channel_id=os.environ.get("SLACK_CHANNEL_ID")
