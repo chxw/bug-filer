@@ -1,18 +1,16 @@
 from logging import setLoggerClass
 import os
 from slack_bolt import App
+from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
 import requests
 import json
+import re
 from bug import Bug
 from util import get_value, get_text
 
 # slack stuff
-# Initializes your app with your bot token and signing secret
-app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
-)
+app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
 @app.event("app_mention")
 def update(client, event,logger):
@@ -352,7 +350,7 @@ def view_submission(ack, client, body, view, logger):
     item_id = r_json["data"]["create_item"]["id"] # save item id
 
     # create update within newly created item
-    body = "\""+"<p><strong>Description</strong></p>"+bug_file.description+"<p><strong>Visibility</strong></p>"+str(bug_file.vis)+"<p><strong>Impact</strong></p>"+str(bug_file.impact)+"<p><strong>To Reproduce</strong></p>"+bug_file.to_reproduce+"<p><strong>Expected behavior</strong></p>"+bug_file.expected+"<p><strong>Configuration</strong></p>"+bug_file.config+"\""
+    body = json.dumps("<p><strong>Description</strong></p>"+bug_file.description+"<p><strong>Visibility</strong></p>"+str(bug_file.vis)+"<p><strong>Impact</strong></p>"+str(bug_file.impact)+"<p><strong>To Reproduce</strong></p>"+bug_file.to_reproduce+"<p><strong>Expected behavior</strong></p>"+bug_file.expected+"<p><strong>Configuration</strong></p>"+bug_file.config)
     print(body)
 
     create_update = 'mutation { create_update (item_id:'+item_id+', body:'+body+') { id } }'
@@ -362,4 +360,4 @@ def view_submission(ack, client, body, view, logger):
 
 # Start your app
 if __name__ == "__main__":
-    app.start(port=int(os.environ.get("PORT", 3000)))
+    SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
