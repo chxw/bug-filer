@@ -1,38 +1,14 @@
+from monday import create_item
 import os
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
-import requests
+from monday import create_item, create_update
 import json
-from util import get_value
+from util import get_value, get_text
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
-
-# user mentions (@s) app
-@app.event("app_mention")
-def update(client, event,logger):
-    try:
-        # monday stuff
-        apiKey = os.environ.get("MONDAY_API_KEY")
-        apiUrl = "https://api.monday.com/v2"
-        headers = {"Authorization" : apiKey}
-        board_id = "1029994357"
-        query5 = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
-        vars = {
-        'myItemName' : event["blocks"][0]["elements"][0]["elements"][1]["text"],
-        'columnVals' : json.dumps({
-        'status_11' : {'label' : 'Frontend'},
-        })
-        }
-        print(event["blocks"][0]["elements"][0]["elements"][1]["text"])
-        
-        
-        data = {'query' : query5, 'variables' : vars}
-        r = requests.post(url=apiUrl, json=data, headers=headers) # make request
-        print(r.json())
-    except Exception as e:
-        logger.error(f"Error publishing home tab: {e}")
 
 # user clicks "File a bug" under Bolt icon
 # The open_modal shortcut listens to a shortcut with the callback_id "open_modal"
@@ -58,47 +34,95 @@ def open_modal(ack, shortcut, client, logger, body):
 def view_submission(ack, client, body, view, logger):
     ack()
 
-    # get user submitted info
-    user = body["user"]["name"]
-    blocks = body["view"]["state"]["values"]
+    try:
+        # get user submitted info
+        user = body["user"]["name"]
+        user_id = body["user"]["id"]
+        blocks = body["view"]["state"]["values"]
 
-    site = get_value('site', 'site-action', blocks)
-    description = get_value('bug-description', 'bug-description-action', blocks)
-    visibility = int(get_value('visibility','visibility-action', blocks))
-    impact = int(get_value('impact', 'impact-action', blocks))
-    to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
-    expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
-    config = get_value('config', 'config-action', blocks)
+        # digest info
+        site = get_value('site', 'site-action', blocks)
+        description = get_value('bug-description', 'bug-description-action', blocks)
+        visibility = int(get_value('visibility','visibility-action', blocks))
+        visibility_text = get_text('visibility','visibility-action', blocks)
+        impact = int(get_value('impact', 'impact-action', blocks))
+        impact_text = get_text('impact', 'impact-action', blocks)
+        to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
+        expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
+        config = get_value('config', 'config-action', blocks)
 
-    # create new monday item
-    api_key = os.environ.get("MONDAY_API_KEY")
-    board_id = os.environ.get("BOARD_ID")
+        # create monday item
+        item_id = create_item(site, description, visibility, impact)
 
-    apiUrl = "https://api.monday.com/v2"
-    headers = {"Authorization" : api_key}
+        url = create_update(user, site, description, visibility, impact, to_reproduce, expected, config, item_id)
 
-    create_item = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
-    vars = {
-        'myItemName' : description,
-        'columnVals' : json.dumps({
-            'status_11' : {'label' : site},
-            'numbers' : visibility,
-            'numbers0' : impact
-        })
-    }
-    new_item = {'query' : create_item, 'variables' : vars}
-    r = requests.post(url=apiUrl, json=new_item, headers=headers) # make request
-    r_json = r.json()
-    print(r_json)
-    item_id = r_json["data"]["create_item"]["id"] # save item id
-
-    # create update within newly created item
-    body = json.dumps("<p><strong>Description</strong></p>"+description+"<p><strong>Visibility</strong></p>"+str(visibility)+"<p><strong>Impact</strong></p>"+str(impact)+"<p><strong>To Reproduce</strong></p>"+to_reproduce+"<p><strong>Expected behavior</strong></p>"+expected+"<p><strong>Configuration</strong></p>"+config+"<p><strong>Filed by</strong></p>"+user)
-
-    create_update = 'mutation { create_update (item_id:'+item_id+', body:'+body+') { id } }'
-    new_update = {'query' : create_update}
-    r = requests.post(url=apiUrl, json=new_update, headers=headers) # make request
-    print(r.json())
+        # send message to channel
+        channel_id="C01CGM74V3R"
+        client.chat_postMessage(
+            channel= channel_id,
+            type="mrkdwn",
+            text="*Bug File* submission from <@"+user_id+"> \n"+"\n*Site*\n"+site+"\n\n*Describe the bug*\n"+description+"\n\n*Visibility*\n"+str(visibility)+"\n\n*Impact*\n"+str(impact)+"\n\n*To Reproduce*\n"+to_reproduce+"\n\n*Expected behavior*\n"+expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+config, 
+            blocks=[
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Bug file submission from * <@"+user_id+"> (see <"+url+"|here>)"
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Site* \n"+site
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Visibility* \n"+visibility_text
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Impact* \n"+impact_text
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*To Reproduce* \n"+to_reproduce
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Expected behavior* \n"+expected
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Configuration (e.g. browser type, screen size, device)* \n"+config
+                    }
+                },
+                {
+                    "type": "divider"
+                }
+            ]
+        )
+    
+    except SlackApiError as e:
+        logger.error("Error retrieving view: {}".format(e))
 
 # Start your app
 if __name__ == "__main__":

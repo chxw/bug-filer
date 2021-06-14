@@ -160,7 +160,7 @@
                     {
                         "text": {
                             "type": "plain_text",
-                            "text": "5️⃣ Huge (angry, pain, crying, $10^5 ARR)",
+                            "text": "5️⃣ = Huge (angry, pain, crying, $10^5 ARR)",
                             "emoji": true
                         },
                         "value": "5"
@@ -168,7 +168,7 @@
                     {
                         "text": {
                             "type": "plain_text",
-                            "text": "4️⃣ Large (anger, dismay, swearing, $10^4 ARR)",
+                            "text": "4️⃣ = Large (anger, dismay, swearing, $10^4 ARR)",
                             "emoji": true
                         },
                         "value": "4"
@@ -176,7 +176,7 @@
                     {
                         "text": {
                             "type": "plain_text",
-                            "text": "3️⃣ Big (frustration, annoyance, $10^3 ARR)",
+                            "text": "3️⃣ = Big (frustration, annoyance, $10^3 ARR)",
                             "emoji": true
                         },
                         "value": "3"
@@ -184,7 +184,7 @@
                     {
                         "text": {
                             "type": "plain_text",
-                            "text": "2️⃣ Medium (eye-rolling, $10^2 ARR)",
+                            "text": "2️⃣ = Medium (eye-rolling, $10^2 ARR)",
                             "emoji": true
                         },
                         "value": "2"
@@ -192,7 +192,7 @@
                     {
                         "text": {
                             "type": "plain_text",
-                            "text": "1️⃣ Small (may make you laugh instead of cry, $10^1 ARR)",
+                            "text": "1️⃣ = Small (may make you laugh instead of cry, $10^1 ARR)",
                             "emoji": true
                         },
                         "value": "1"
@@ -232,7 +232,8 @@
                 "type": "plain_text_input",
                 "multiline": true,
                 "action_id": "expected-behavior-action"
-            }
+            },
+            "optional": true
         },
         {
             "type": "input",
