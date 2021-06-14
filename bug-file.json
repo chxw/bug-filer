@@ -1,0 +1,253 @@
+{
+    "type": "modal",
+    "callback_id": "view-id",
+    "title": {
+        "type": "plain_text",
+        "text": "File a bug",
+        "emoji": true
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Submit",
+        "emoji": true
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Cancel",
+        "emoji": true
+    },
+    "blocks": [
+        {
+            "type": "section",
+            "text": {
+                "type": "plain_text",
+                "text": "This form will submit your bug to the #dev-bugs board on monday.com",
+                "emoji": true
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "input",
+            "block_id":"site",
+            "element": {
+                "type": "static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select site",
+                    "emoji": true
+                },
+                "options": [
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "multidocs",
+                            "emoji": true
+                        },
+                        "value": "Multidocs"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "platform",
+                            "emoji": true
+                        },
+                        "value": "Platform"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "both",
+                            "emoji": true
+                        },
+                        "value": "Both"
+                    }
+                ],
+                "action_id": "site-action"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "Site",
+                "emoji": true
+            }
+        },
+        {
+            "type": "input",
+            "block_id":"bug-description",
+            "label": {
+                "type": "plain_text",
+                "text": "Describe the bug",
+                "emoji": true
+            },
+            "element": {
+                "type": "plain_text_input",
+                "multiline": true,
+                "action_id": "bug-description-action"
+            }
+        },
+        {
+            "type": "input",
+            "block_id":"visibility",
+            "element": {
+                "type": "static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Rate visibility",
+                    "emoji": true
+                },
+                "options": [
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "1️⃣ (login/signup, docs - getting started, access key management)",
+                            "emoji": true
+                        },
+                        "value": "1"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "2️⃣ clicks away",
+                            "emoji": true
+                        },
+                        "value": "2"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "3️⃣ clicks away",
+                            "emoji": true
+                        },
+                        "value": "3"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "4️⃣ clicks away",
+                            "emoji": true
+                        },
+                        "value": "4"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "5️⃣ clicks away",
+                            "emoji": true
+                        },
+                        "value": "5"
+                    }
+                ],
+                "action_id": "visibility-action"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "Visibility",
+                "emoji": true
+            }
+        },
+        {
+            "type": "input",
+            "block_id":"impact",
+            "element": {
+                "type": "static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Rate impact",
+                    "emoji": true
+                },
+                "options": [
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "5️⃣ Huge (angry, pain, crying, $10^5 ARR)",
+                            "emoji": true
+                        },
+                        "value": "5"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "4️⃣ Large (anger, dismay, swearing, $10^4 ARR)",
+                            "emoji": true
+                        },
+                        "value": "4"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "3️⃣ Big (frustration, annoyance, $10^3 ARR)",
+                            "emoji": true
+                        },
+                        "value": "3"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "2️⃣ Medium (eye-rolling, $10^2 ARR)",
+                            "emoji": true
+                        },
+                        "value": "2"
+                    },
+                    {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "1️⃣ Small (may make you laugh instead of cry, $10^1 ARR)",
+                            "emoji": true
+                        },
+                        "value": "1"
+                    }
+                ],
+                "action_id": "impact-action"
+            },
+            "label": {
+                "type": "plain_text",
+                "text": "Impact",
+                "emoji": true
+            }
+        },
+        {
+            "type": "input",
+            "block_id":"how-to-reproduce",
+            "label": {
+                "type": "plain_text",
+                "text": "To Reproduce",
+                "emoji": true
+            },
+            "element": {
+                "type": "plain_text_input",
+                "multiline": true,
+                "action_id": "how-to-reproduce-action"
+            }
+        },
+        {
+            "type": "input",
+            "block_id":"expected-behavior",
+            "label": {
+                "type": "plain_text",
+                "text": "Expected behavior",
+                "emoji": true
+            },
+            "element": {
+                "type": "plain_text_input",
+                "multiline": true,
+                "action_id": "expected-behavior-action"
+            }
+        },
+        {
+            "type": "input",
+            "block_id":"config",
+            "label": {
+                "type": "plain_text",
+                "text": "Configuration (e.g. browser type, screen size, device)",
+                "emoji": true
+            },
+            "element": {
+                "type": "plain_text_input",
+                "multiline": false,
+                "action_id": "config-action"
+            },
+            "optional": true
+        }
+    ]
+}

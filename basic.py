@@ -1,17 +1,15 @@
-from logging import setLoggerClass
 import os
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
 import requests
 import json
-import re
-from bug import Bug
-from util import get_value, get_text
+from util import get_value
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
+# user mentions (@s) app
 @app.event("app_mention")
 def update(client, event,logger):
     try:
@@ -28,7 +26,6 @@ def update(client, event,logger):
         })
         }
         print(event["blocks"][0]["elements"][0]["elements"][1]["text"])
-        # print(event["blocks"]["elements"]["elements"])
         
         
         data = {'query' : query5, 'variables' : vars}
@@ -37,280 +34,31 @@ def update(client, event,logger):
     except Exception as e:
         logger.error(f"Error publishing home tab: {e}")
 
-# When user clicks "File a bug" under Bolt icon
+# user clicks "File a bug" under Bolt icon
 # The open_modal shortcut listens to a shortcut with the callback_id "open_modal"
 @app.shortcut("file_bug")
 def open_modal(ack, shortcut, client, logger, body):
     ack()
+
+    with open('bug-file.json') as file:
+        bug_file = json.load(file)
     try:
         # Call the views_open method using the built-in WebClient
         api_response = client.views_open(
             trigger_id=shortcut["trigger_id"],
             # View payload for a modal
-            view=
-                {
-                    "type": "modal",
-                    "callback_id": "view-id",
-                    "title": {
-                        "type": "plain_text",
-                        "text": "File a bug",
-                        "emoji": True
-                    },
-                    "submit": {
-                        "type": "plain_text",
-                        "text": "Submit",
-                        "emoji": True
-                    },
-                    "close": {
-                        "type": "plain_text",
-                        "text": "Cancel",
-                        "emoji": True
-                    },
-                    "blocks": [
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "This form will submit your bug to the #dev-bugs board on monday.com",
-                                "emoji": True
-                            }
-                        },
-                        {
-                            "type": "divider"
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"site",
-                            "element": {
-                                "type": "static_select",
-                                "placeholder": {
-                                    "type": "plain_text",
-                                    "text": "Select site",
-                                    "emoji": True
-                                },
-                                "options": [
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "multidocs",
-                                            "emoji": True
-                                        },
-                                        "value": "Multidocs"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "platform",
-                                            "emoji": True
-                                        },
-                                        "value": "Platform"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "both",
-                                            "emoji": True
-                                        },
-                                        "value": "Both"
-                                    }
-                                ],
-                                "action_id": "site-action"
-                            },
-                            "label": {
-                                "type": "plain_text",
-                                "text": "Site",
-                                "emoji": True
-                            }
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"bug-description",
-                            "label": {
-                                "type": "plain_text",
-                                "text": "Describe the bug",
-                                "emoji": True
-                            },
-                            "element": {
-                                "type": "plain_text_input",
-                                "multiline": True,
-                                "action_id": "bug-description-action"
-                            }
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"visibility",
-                            "element": {
-                                "type": "static_select",
-                                "placeholder": {
-                                    "type": "plain_text",
-                                    "text": "Rate visibility",
-                                    "emoji": True
-                                },
-                                "options": [
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "1️⃣ (login/signup, docs - getting started, access key management)",
-                                            "emoji": True
-                                        },
-                                        "value": "1"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "2️⃣ clicks away",
-                                            "emoji": True
-                                        },
-                                        "value": "2"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "3️⃣ clicks away",
-                                            "emoji": True
-                                        },
-                                        "value": "3"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "4️⃣ clicks away",
-                                            "emoji": True
-                                        },
-                                        "value": "4"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "5️⃣ clicks away",
-                                            "emoji": True
-                                        },
-                                        "value": "5"
-                                    }
-                                ],
-                                "action_id": "visibility-action"
-                            },
-                            "label": {
-                                "type": "plain_text",
-                                "text": "Visibility",
-                                "emoji": True
-                            }
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"impact",
-                            "element": {
-                                "type": "static_select",
-                                "placeholder": {
-                                    "type": "plain_text",
-                                    "text": "Rate impact",
-                                    "emoji": True
-                                },
-                                "options": [
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "5️⃣ Huge (angry, pain, crying, $10^5 ARR)",
-                                            "emoji": True
-                                        },
-                                        "value": "5"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "4️⃣ Large (anger, dismay, swearing, $10^4 ARR)",
-                                            "emoji": True
-                                        },
-                                        "value": "4"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "3️⃣ Big (frustration, annoyance, $10^3 ARR)",
-                                            "emoji": True
-                                        },
-                                        "value": "3"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "2️⃣ Medium (eye-rolling, $10^2 ARR)",
-                                            "emoji": True
-                                        },
-                                        "value": "2"
-                                    },
-                                    {
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": "1️⃣ Small (may make you laugh instead of cry, $10^1 ARR)",
-                                            "emoji": True
-                                        },
-                                        "value": "1"
-                                    }
-                                ],
-                                "action_id": "impact-action"
-                            },
-                            "label": {
-                                "type": "plain_text",
-                                "text": "Impact",
-                                "emoji": True
-                            }
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"how-to-reproduce",
-                            "label": {
-                                "type": "plain_text",
-                                "text": "To Reproduce",
-                                "emoji": True
-                            },
-                            "element": {
-                                "type": "plain_text_input",
-                                "multiline": True,
-                                "action_id": "how-to-reproduce-action"
-                            }
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"expected-behavior",
-                            "label": {
-                                "type": "plain_text",
-                                "text": "Expected behavior",
-                                "emoji": True
-                            },
-                            "element": {
-                                "type": "plain_text_input",
-                                "multiline": True,
-                                "action_id": "expected-behavior-action"
-                            }
-                        },
-                        {
-                            "type": "input",
-                            "block_id":"config",
-                            "label": {
-                                "type": "plain_text",
-                                "text": "Configuration (e.g. browser type, screen size, device)",
-                                "emoji": True
-                            },
-                            "element": {
-                                "type": "plain_text_input",
-                                "multiline": False,
-                                "action_id": "config-action"
-                            },
-                            "optional": True
-                        }
-                    ]
-                }
-            )
+            view=bug_file)
         logger.info(api_response)
         
     except SlackApiError as e:
         logger.error("Error creating conversation: {}".format(e))
 
+# Open user submission of modal of callback_id "view-d"
 @app.view("view-id")
 def view_submission(ack, client, body, view, logger):
     ack()
 
+    # get user submitted info
     user = body["user"]["name"]
     blocks = body["view"]["state"]["values"]
 
@@ -322,7 +70,7 @@ def view_submission(ack, client, body, view, logger):
     expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
     config = get_value('config', 'config-action', blocks)
 
-    # monday stuff
+    # create new monday item
     api_key = os.environ.get("MONDAY_API_KEY")
     board_id = os.environ.get("BOARD_ID")
 
