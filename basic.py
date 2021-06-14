@@ -44,9 +44,9 @@ def view_submission(ack, client, body, view, logger):
         site = get_value('site', 'site-action', blocks)
         description = get_value('bug-description', 'bug-description-action', blocks)
         visibility = int(get_value('visibility','visibility-action', blocks))
-        visibility_text = get_text('visibility','visibility-action', blocks)
+        visibility_text = get_text('visibility','visibility-action', blocks) #text
         impact = int(get_value('impact', 'impact-action', blocks))
-        impact_text = get_text('impact', 'impact-action', blocks)
+        impact_text = get_text('impact', 'impact-action', blocks) # text
         to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
         expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
         config = get_value('config', 'config-action', blocks)
