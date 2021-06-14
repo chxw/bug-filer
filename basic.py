@@ -37,17 +37,16 @@ def update(client, event,logger):
     except Exception as e:
         logger.error(f"Error publishing home tab: {e}")
 
+# When user clicks "File a bug" under Bolt icon
 # The open_modal shortcut listens to a shortcut with the callback_id "open_modal"
 @app.shortcut("file_bug")
 def open_modal(ack, shortcut, client, logger, body):
-    # Acknowledge the shortcut request
     ack()
-
     try:
         # Call the views_open method using the built-in WebClient
         api_response = client.views_open(
             trigger_id=shortcut["trigger_id"],
-            # A simple view payload for a modal
+            # View payload for a modal
             view=
                 {
                     "type": "modal",
@@ -312,17 +311,16 @@ def open_modal(ack, shortcut, client, logger, body):
 def view_submission(ack, client, body, view, logger):
     ack()
 
-    user = body["user"]["id"]
+    user = body["user"]["name"]
     blocks = body["view"]["state"]["values"]
 
-    bug_file = Bug()
-    bug_file.site = get_value('site', 'site-action', blocks)
-    bug_file.description = get_value('bug-description', 'bug-description-action', blocks)
-    bug_file.vis = int(get_value('visibility','visibility-action', blocks))
-    bug_file.impact = int(get_value('impact', 'impact-action', blocks))
-    bug_file.to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
-    bug_file.expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
-    bug_file.config = get_value('config', 'config-action', blocks)
+    site = get_value('site', 'site-action', blocks)
+    description = get_value('bug-description', 'bug-description-action', blocks)
+    visibility = int(get_value('visibility','visibility-action', blocks))
+    impact = int(get_value('impact', 'impact-action', blocks))
+    to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
+    expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
+    config = get_value('config', 'config-action', blocks)
 
     # monday stuff
     api_key = os.environ.get("MONDAY_API_KEY")
@@ -331,16 +329,13 @@ def view_submission(ack, client, body, view, logger):
     apiUrl = "https://api.monday.com/v2"
     headers = {"Authorization" : api_key}
 
-    # create item with bug file information
-    print("bug_file.description", bug_file.description, type(bug_file.description))
-
     create_item = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
     vars = {
-        'myItemName' : bug_file.description,
+        'myItemName' : description,
         'columnVals' : json.dumps({
-            'status_11' : {'label' : bug_file.site},
-            'numbers' : bug_file.vis,
-            'numbers0' : bug_file.impact
+            'status_11' : {'label' : site},
+            'numbers' : visibility,
+            'numbers0' : impact
         })
     }
     new_item = {'query' : create_item, 'variables' : vars}
@@ -350,8 +345,7 @@ def view_submission(ack, client, body, view, logger):
     item_id = r_json["data"]["create_item"]["id"] # save item id
 
     # create update within newly created item
-    body = json.dumps("<p><strong>Description</strong></p>"+bug_file.description+"<p><strong>Visibility</strong></p>"+str(bug_file.vis)+"<p><strong>Impact</strong></p>"+str(bug_file.impact)+"<p><strong>To Reproduce</strong></p>"+bug_file.to_reproduce+"<p><strong>Expected behavior</strong></p>"+bug_file.expected+"<p><strong>Configuration</strong></p>"+bug_file.config)
-    print(body)
+    body = json.dumps("<p><strong>Description</strong></p>"+description+"<p><strong>Visibility</strong></p>"+str(visibility)+"<p><strong>Impact</strong></p>"+str(impact)+"<p><strong>To Reproduce</strong></p>"+to_reproduce+"<p><strong>Expected behavior</strong></p>"+expected+"<p><strong>Configuration</strong></p>"+config+"<p><strong>Filed by</strong></p>"+user)
 
     create_update = 'mutation { create_update (item_id:'+item_id+', body:'+body+') { id } }'
     new_update = {'query' : create_update}
