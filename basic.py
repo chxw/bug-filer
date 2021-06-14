@@ -1,11 +1,10 @@
-from monday import create_item
 import os
+import json
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
 from monday import create_item, create_update
-import json
-from util import get_value, get_text
+from util import get_value, get_text, save_to_history
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
@@ -36,7 +35,7 @@ def view_submission(ack, client, body, view, logger):
 
     try:
         # get user submitted info
-        user = body["user"]["name"]
+        user = body["user"]["username"]
         user_id = body["user"]["id"]
         blocks = body["view"]["state"]["values"]
 
@@ -53,11 +52,10 @@ def view_submission(ack, client, body, view, logger):
 
         # create monday item
         item_id = create_item(site, description, visibility, impact)
-
         url = create_update(user, site, description, visibility, impact, to_reproduce, expected, config, item_id)
 
         # send message to channel
-        channel_id="C01CGM74V3R"
+        channel_id=os.environ.get("SLACK_CHANNEL_ID")
         client.chat_postMessage(
             channel= channel_id,
             type="mrkdwn",
@@ -72,6 +70,13 @@ def view_submission(ack, client, body, view, logger):
                 },
                 {
                     "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Describe the bug* \n"+description
+                    }
                 },
                 {
                     "type": "section",
@@ -120,6 +125,9 @@ def view_submission(ack, client, body, view, logger):
                 }
             ]
         )
+
+        # save submission
+        save_to_history(user, user_id, site, description, visibility, impact, expected, to_reproduce, config)
     
     except SlackApiError as e:
         logger.error("Error retrieving view: {}".format(e))
