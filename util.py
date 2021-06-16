@@ -14,9 +14,9 @@ def get_text(block_id, action_id, blocks):
     except KeyError:
         return "N/A"
 
-def save_to_history(user, user_id, site, description, visibility, impact, expected, to_reproduce, config):
+def save_to_history(user, name, user_id, site, description, visibility, impact, expected, to_reproduce, config, monday_item_id, monday_update_url):
     with open('history.csv', 'a', newline='') as file:
         history = csv.writer(file, delimiter=',')
-        row = [dt.now(), user, user_id, site, description, visibility, impact, expected, to_reproduce, config]
+        row = [dt.now(), user, name, user_id, site, description, visibility, impact, expected, to_reproduce, config, monday_item_id, monday_update_url]
         history.writerow(row)
         file.close()

@@ -34,105 +34,106 @@ def view_submission(ack, client, body, view, logger):
     ack()
 
     try:
-        # get user submitted info
+        # get submitted info
         user = body["user"]["username"]
+        name = body["user"]["name"]
         user_id = body["user"]["id"]
         blocks = body["view"]["state"]["values"]
-
-        # digest info
-        site = get_value('site', 'site-action', blocks)
-        description = get_value('bug-description', 'bug-description-action', blocks)
-        visibility = int(get_value('visibility','visibility-action', blocks))
-        visibility_text = get_text('visibility','visibility-action', blocks) #text
-        impact = int(get_value('impact', 'impact-action', blocks))
-        impact_text = get_text('impact', 'impact-action', blocks) # text
-        to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
-        expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
-        config = get_value('config', 'config-action', blocks)
-
-        # create monday item
-        item_id = create_item(site, description, visibility, impact)
-        # create monday url
-        url = create_update(user, description, visibility_text, impact_text, to_reproduce, expected, config, item_id)
-
-        # save submission
-        save_to_history(user, user_id, site, description, visibility, impact, expected, to_reproduce, config, item_id, url)
-
-        # send message to channel
-        channel_id=os.environ.get("SLACK_CHANNEL_ID")
-        client.chat_postMessage(
-            channel= channel_id,
-            type="mrkdwn",
-            text="*Bug File* submission from <@"+user_id+"> \n"+"\n*Site*\n"+site+"\n\n*Describe the bug*\n"+description+"\n\n*Visibility*\n"+str(visibility)+"\n\n*Impact*\n"+str(impact)+"\n\n*To Reproduce*\n"+to_reproduce+"\n\n*Expected behavior*\n"+expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+config, 
-            # json.dumps() necessary for for parsing special unicode characters
-            blocks=json.dumps([
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Bug file submission from * <@"+user_id+"> (see <"+url+"|here>)"
-                    }
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Describe the bug* \n"+description
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Site* \n"+site
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Visibility* \n"+visibility_text
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Impact* \n"+impact_text
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*To Reproduce* \n"+to_reproduce
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Expected behavior* \n"+expected
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Configuration (e.g. browser type, screen size, device)* \n"+config
-                    }
-                },
-                {
-                    "type": "divider"
-                }
-            ])
-        )
     
     except SlackApiError as e:
         logger.error("Error retrieving view: {}".format(e))
+
+    # digest info
+    site = get_value('site', 'site-action', blocks)
+    description = get_value('bug-description', 'bug-description-action', blocks)
+    visibility = int(get_value('visibility','visibility-action', blocks))
+    visibility_text = get_text('visibility','visibility-action', blocks) #text
+    impact = int(get_value('impact', 'impact-action', blocks))
+    impact_text = get_text('impact', 'impact-action', blocks) # text
+    to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
+    expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
+    config = get_value('config', 'config-action', blocks)
+
+    # create monday item
+    monday_item_id = create_item(site, description, visibility, impact)
+    # create monday url
+    monday_update_url = create_update(name, description, visibility_text, impact_text, to_reproduce, expected, config, monday_item_id)
+
+    # save submission
+    save_to_history(user, name, user_id, site, description, visibility, impact, expected, to_reproduce, config, monday_item_id, monday_update_url)
+
+    # send message to channel
+    channel_id=os.environ.get("SLACK_CHANNEL_ID")
+    client.chat_postMessage(
+        channel= channel_id,
+        type="mrkdwn",
+        text="*Bug File* submission from <@"+user_id+"> \n"+"\n*Site*\n"+site+"\n\n*Describe the bug*\n"+description+"\n\n*Visibility*\n"+str(visibility)+"\n\n*Impact*\n"+str(impact)+"\n\n*To Reproduce*\n"+to_reproduce+"\n\n*Expected behavior*\n"+expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+config, 
+        # json.dumps() necessary for for parsing special unicode characters
+        blocks=json.dumps([
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Bug file submission from * <@"+user_id+"> (see <"+monday_update_url+"|here>)"
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Describe the bug* \n"+description
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Site* \n"+site
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Visibility* \n"+visibility_text
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Impact* \n"+impact_text
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*To Reproduce* \n"+to_reproduce
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Expected behavior* \n"+expected
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Configuration (e.g. browser type, screen size, device)* \n"+config
+                }
+            },
+            {
+                "type": "divider"
+            }
+        ])
+    )
 
 # Start your app
 if __name__ == "__main__":
