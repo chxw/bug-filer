@@ -10,10 +10,18 @@ from bug import Bug
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
+# user sends file in #dev-bugs
+@app.event("message")
+def upload_image(client, body, logger):
+    if body["event"]["files"]:
+        send_message(client, "You uploaded a file, which monday item do you want to attach this to?", logger)
+
 # user clicks "File a bug" under Bolt icon
-# The open_modal shortcut listens to a shortcut with the callback_id "open_modal"
 @app.shortcut("file_bug")
 def open_modal(ack, shortcut, client, logger):
+    '''
+    The open_modal shortcut listens to a shortcut with the callback_id "file_bug"
+    '''
     ack()
 
     with open('bug-file.json') as file:
@@ -29,9 +37,12 @@ def open_modal(ack, shortcut, client, logger):
     except SlackApiError as e:
         logger.error("Error creating conversation: {}".format(e))
 
-# Open user submission of modal of callback_id "view-id" from "File a bug"
+# open user submission
 @app.view("view-id")
 def view_submission(ack, client, body, logger):
+    '''
+    Open view of modal of callback_id "view-id"
+    '''
     ack()
     try:
         bug = Bug()
@@ -63,10 +74,10 @@ def view_submission(ack, client, body, logger):
     save_to_history(bug)
 
     # send message to #dev-bugs
-    send_message(bug, client, logger)
+    send_summary(bug, client, logger)
 
 # Send summary of user submitted bug report to slack channel
-def send_message(bug, client, logger):
+def send_summary(bug, client, logger):
     try:
         channel_id=os.environ.get("SLACK_CHANNEL_ID")
         client.chat_postMessage(
@@ -81,11 +92,18 @@ def send_message(bug, client, logger):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Bug file submission from * <@"+bug.user_id+"> (see <"+bug.monday_update_url+"|here>)"
+                        "text": "*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_update_url+"|here>)"
                     }
                 },
                 {
                     "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Item ID* \n"+bug.monday_item_id
+                    }
                 },
                 {
                     "type": "section",
@@ -145,6 +163,24 @@ def send_message(bug, client, logger):
         logger.error("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
         logger.error("Error sending channel message, some slack issue: {}".format(e))
+    
+def send_message(client, text, logger):
+    try:
+        channel_id=os.environ.get("SLACK_CHANNEL_ID")
+        client.chat_postMessage(
+            channel= channel_id,
+            type="mrkdwn",
+            text=text)
+    except (IndexError, KeyError, TypeError) as e:
+        logger.error("Error sending channel message, data structures don't match: {}".format(e))
+    except SlackApiError as e:
+        logger.error("Error sending channel message, some slack issue: {}".format(e))
+
+@app.command("/add")
+def add_update(ack, body):
+    ack()
+    print(body)
+
 
 # Start your app
 if __name__ == "__main__":

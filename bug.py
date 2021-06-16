@@ -13,4 +13,5 @@ class Bug:
         self.expected = ''
         self.config = ''
         self.monday_item_id = ''
+        self.monday_update_id = ''
         self.monday_update_url = ''

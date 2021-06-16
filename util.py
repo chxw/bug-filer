@@ -17,6 +17,6 @@ def get_text(block_id, action_id, blocks):
 def save_to_history(bug):
     with open('history.csv', 'a', newline='') as file:
         history = csv.writer(file, delimiter=',')
-        row = [dt.now(), bug.user, bug.name, bug.user_id, bug.site, bug.description, bug.visibility, bug.impact, bug.expected, bug.to_reproduce, bug.config, bug.monday_item_id, bug.monday_update_url]
+        row = [dt.now(), bug.user, bug.name, bug.user_id, bug.site, bug.description, bug.visibility, bug.impact, bug.expected, bug.to_reproduce, bug.config, bug.monday_item_id, bug.monday_update_id, bug.monday_update_url]
         history.writerow(row)
         file.close()
