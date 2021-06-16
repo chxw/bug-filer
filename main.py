@@ -4,7 +4,7 @@ import json
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
-from slackblocks import Message, SectionBlock
+from slackblocks import Message, SectionBlock, DividerBlock
 
 from monday import create_item, create_update
 from util import get_last_5_submits, get_value, get_text, save_to_history
@@ -16,11 +16,13 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 # user mentions @Bug Filer
 @app.event("app_mention")
 def upload_image(client, body, logger):
-    print(body)
+    print(json.dumps(body, indent=4))
     if body["event"]["files"]:
         file_URL = body["event"]["files"][0]["url_private"]
-        block = SectionBlock("You uploaded a file, which monday item do you want to attach this to?")
-        message = Message(channel="#test", blocks=block)
+        # reply to thread
+        message_ts = body["event"]["event_ts"]
+        block = [SectionBlock("You uploaded a file, which monday item do you want to attach this to?"), DividerBlock()]
+        message = Message(channel="#test", text="text", blocks=block, thread_ts=message_ts)
         client.chat_postMessage(**message)
         last_5 = get_last_5_submits()
 
@@ -87,85 +89,23 @@ def view_submission(ack, client, body, logger):
 # Send summary of user submitted bug report to slack channel
 def send_summary(bug, client, logger):
     try:
-        channel_id=os.environ.get("SLACK_CHANNEL_ID")
-        client.chat_postMessage(
-            channel= channel_id,
-            type="mrkdwn",
-            # Backup text
-            text="*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config, 
-            # Blocks
-            blocks=json.dumps([
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)"
-                    }
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Item ID* \n"+bug.monday_item_id
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Describe the bug* \n"+bug.description
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Site* \n"+bug.site
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Visibility* \n"+bug.visibility_text
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Impact* \n"+bug.impact_text
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*To Reproduce* \n"+bug.to_reproduce
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Expected behavior* \n"+bug.expected
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Configuration (e.g. browser type, screen size, device)* \n"+bug.config
-                    }
-                },
-                {
-                    "type": "divider"
-                }
-            ])
-        )
+        # backup text
+        text = "*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config
+        # format blocks
+        header = SectionBlock("*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)")
+        item_id = SectionBlock("*Item ID* \n"+bug.monday_item_id)
+        description = SectionBlock("*Describe the bug* \n"+bug.description)
+        site = SectionBlock("*Site* \n"+bug.site)
+        visibility = SectionBlock("*Visibility* \n"+bug.visibility_text)
+        impact = SectionBlock("*Impact* \n"+bug.impact_text)
+        to_reproduce = SectionBlock( "*To Reproduce* \n"+bug.to_reproduce)
+        expected = SectionBlock("*Expected behavior* \n"+bug.expected)
+        config = SectionBlock("*Configuration (e.g. browser type, screen size, device)* \n"+bug.config)
+        blocks = [header, DividerBlock(), item_id, description, site, visibility, impact, to_reproduce, expected, config, DividerBlock()]
+        message = Message(channel="#test", text=text, blocks=blocks)
+        
+        client.chat_postMessage(**message) # send message
+
     except (IndexError, KeyError, TypeError) as e:
         logger.error("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
