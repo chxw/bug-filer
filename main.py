@@ -13,8 +13,8 @@ from bug import Bug
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
-# user sends file in #dev-bugs
-@app.event("message")
+# user mentions @Bug Filer
+@app.event("app_mention")
 def upload_image(client, body, logger):
     print(body)
     if body["event"]["files"]:
@@ -22,7 +22,7 @@ def upload_image(client, body, logger):
         block = SectionBlock("You uploaded a file, which monday item do you want to attach this to?")
         message = Message(channel="#test", blocks=block)
         client.chat_postMessage(**message)
-        get_last_5_submits()
+        last_5 = get_last_5_submits()
 
 # user clicks "File a bug" under Bolt icon
 @app.shortcut("file_bug")
@@ -94,7 +94,6 @@ def send_summary(bug, client, logger):
             # Backup text
             text="*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config, 
             # Blocks
-            # json.dumps() for parsing special unicode characters
             blocks=json.dumps([
                 {
                     "type": "section",
@@ -183,12 +182,6 @@ def send_message(client, text, logger):
         logger.error("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
         logger.error("Error sending channel message, some slack issue: {}".format(e))
-
-@app.command("/add")
-def add_update(ack, body):
-    ack()
-    print(body)
-
 
 # Start your app
 if __name__ == "__main__":
