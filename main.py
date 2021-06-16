@@ -52,7 +52,11 @@ def view_submission(ack, client, body, view, logger):
 
         # create monday item
         item_id = create_item(site, description, visibility, impact)
-        url = create_update(user, site, description, visibility_text, impact_text, to_reproduce, expected, config, item_id)
+        # create monday url
+        url = create_update(user, description, visibility_text, impact_text, to_reproduce, expected, config, item_id)
+
+        # save submission
+        save_to_history(user, user_id, site, description, visibility, impact, expected, to_reproduce, config, item_id, url)
 
         # send message to channel
         channel_id=os.environ.get("SLACK_CHANNEL_ID")
@@ -60,7 +64,8 @@ def view_submission(ack, client, body, view, logger):
             channel= channel_id,
             type="mrkdwn",
             text="*Bug File* submission from <@"+user_id+"> \n"+"\n*Site*\n"+site+"\n\n*Describe the bug*\n"+description+"\n\n*Visibility*\n"+str(visibility)+"\n\n*Impact*\n"+str(impact)+"\n\n*To Reproduce*\n"+to_reproduce+"\n\n*Expected behavior*\n"+expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+config, 
-            blocks=[
+            # json.dumps() necessary for for parsing special unicode characters
+            blocks=json.dumps([
                 {
                     "type": "section",
                     "text": {
@@ -123,11 +128,8 @@ def view_submission(ack, client, body, view, logger):
                 {
                     "type": "divider"
                 }
-            ]
+            ])
         )
-
-        # save submission
-        save_to_history(user, user_id, site, description, visibility, impact, expected, to_reproduce, config)
     
     except SlackApiError as e:
         logger.error("Error retrieving view: {}".format(e))

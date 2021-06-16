@@ -4,6 +4,7 @@ import json
 
 apiUrl = "https://api.monday.com/v2"
 api_key = os.environ.get("MONDAY_API_KEY")
+headers = {"Authorization" : api_key}
 board_id = os.environ.get("BOARD_ID")
 
 def get_priority(imp, vis):
@@ -17,8 +18,6 @@ def get_priority(imp, vis):
         return "Low"
 
 def create_item(site, description, visibility, impact):
-    headers = {"Authorization" : api_key}
-
     mutate_query = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
     vars = {
         'myItemName' : description,
@@ -41,7 +40,7 @@ def create_item(site, description, visibility, impact):
     except KeyError as e:
         print("Error creating monday item {0}".format(e))
 
-def create_update(user, site, description, visibility_text, impact_text, to_reproduce, expected, config, item_id):
+def create_update(user, description, visibility_text, impact_text, to_reproduce, expected, config, item_id):
     headers = {"Authorization" : api_key}
 
     body = json.dumps("<p><strong>Describe the bug</strong></p>"+description+"<p></p><p><strong>Visibility</strong></p>"+visibility_text+"<p></p><p><strong>Impact</strong></p>"+impact_text+"<p></p><p><strong>To Reproduce</strong></p>"+to_reproduce+"<p></p><p><strong>Expected behavior</strong></p>"+expected+"<p></p><p><strong>Configuration (e.g. browser type, screen size, device)</strong></p>"+config+"<p></p><p><strong>Filed by</strong></p>"+user)
