@@ -5,6 +5,7 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
 from monday import create_item, create_update
 from util import get_value, get_text, save_to_history
+from bug import Bug
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
@@ -32,49 +33,49 @@ def open_modal(ack, shortcut, client, logger, body):
 @app.view("view-id")
 def view_submission(ack, client, body, view, logger):
     ack()
-
     try:
-        # get submitted info
-        user = body["user"]["username"]
-        name = body["user"]["name"]
-        user_id = body["user"]["id"]
+        bug = Bug()
+        # who submitted?
+        bug.user = body["user"]["username"]
+        bug.name = body["user"]["name"]
+        bug.user_id = body["user"]["id"]
+        # digest info
         blocks = body["view"]["state"]["values"]
-    
+        bug.site = get_value('site', 'site-action', blocks)
+        bug.description = get_value('bug-description', 'bug-description-action', blocks)
+        bug.visibility = int(get_value('visibility','visibility-action', blocks))
+        bug.visibility_text = get_text('visibility','visibility-action', blocks) #text
+        bug.impact = int(get_value('impact', 'impact-action', blocks))
+        bug.impact_text = get_text('impact', 'impact-action', blocks) # text
+        bug.to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
+        bug.expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
+        bug.config = get_value('config', 'config-action', blocks)
+
+    except (IndexError, KeyError, TypeError) as e:
+        logger.error("Error, data has unexpected inner structure: {}".format(e))
     except SlackApiError as e:
         logger.error("Error retrieving view: {}".format(e))
 
-    # digest info
-    site = get_value('site', 'site-action', blocks)
-    description = get_value('bug-description', 'bug-description-action', blocks)
-    visibility = int(get_value('visibility','visibility-action', blocks))
-    visibility_text = get_text('visibility','visibility-action', blocks) #text
-    impact = int(get_value('impact', 'impact-action', blocks))
-    impact_text = get_text('impact', 'impact-action', blocks) # text
-    to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
-    expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
-    config = get_value('config', 'config-action', blocks)
+    # create monday item + update
+    create_item(bug)
+    create_update(bug)
 
-    # create monday item
-    monday_item_id = create_item(site, description, visibility, impact)
-    # create monday url
-    monday_update_url = create_update(name, description, visibility_text, impact_text, to_reproduce, expected, config, monday_item_id)
-
-    # save submission
-    save_to_history(user, name, user_id, site, description, visibility, impact, expected, to_reproduce, config, monday_item_id, monday_update_url)
+    # save submission 
+    save_to_history(bug)
 
     # send message to channel
     channel_id=os.environ.get("SLACK_CHANNEL_ID")
     client.chat_postMessage(
         channel= channel_id,
         type="mrkdwn",
-        text="*Bug File* submission from <@"+user_id+"> \n"+"\n*Site*\n"+site+"\n\n*Describe the bug*\n"+description+"\n\n*Visibility*\n"+str(visibility)+"\n\n*Impact*\n"+str(impact)+"\n\n*To Reproduce*\n"+to_reproduce+"\n\n*Expected behavior*\n"+expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+config, 
-        # json.dumps() necessary for for parsing special unicode characters
+        text="*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config, 
+        # json.dumps() for parsing special unicode characters
         blocks=json.dumps([
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Bug file submission from * <@"+user_id+"> (see <"+monday_update_url+"|here>)"
+                    "text": "*Bug file submission from * <@"+bug.user_id+"> (see <"+bug.monday_update_url+"|here>)"
                 }
             },
             {
@@ -84,49 +85,49 @@ def view_submission(ack, client, body, view, logger):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Describe the bug* \n"+description
+                    "text": "*Describe the bug* \n"+bug.description
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Site* \n"+site
+                    "text": "*Site* \n"+bug.site
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Visibility* \n"+visibility_text
+                    "text": "*Visibility* \n"+bug.visibility_text
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Impact* \n"+impact_text
+                    "text": "*Impact* \n"+bug.impact_text
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*To Reproduce* \n"+to_reproduce
+                    "text": "*To Reproduce* \n"+bug.to_reproduce
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Expected behavior* \n"+expected
+                    "text": "*Expected behavior* \n"+bug.expected
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Configuration (e.g. browser type, screen size, device)* \n"+config
+                    "text": "*Configuration (e.g. browser type, screen size, device)* \n"+bug.config
                 }
             },
             {
