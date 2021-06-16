@@ -13,7 +13,7 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 # user clicks "File a bug" under Bolt icon
 # The open_modal shortcut listens to a shortcut with the callback_id "open_modal"
 @app.shortcut("file_bug")
-def open_modal(ack, shortcut, client, logger, body):
+def open_modal(ack, shortcut, client, logger):
     ack()
 
     with open('bug-file.json') as file:
@@ -29,9 +29,9 @@ def open_modal(ack, shortcut, client, logger, body):
     except SlackApiError as e:
         logger.error("Error creating conversation: {}".format(e))
 
-# Open user submission of modal of callback_id "view-d"
+# Open user submission of modal of callback_id "view-id" from "File a bug"
 @app.view("view-id")
-def view_submission(ack, client, body, view, logger):
+def view_submission(ack, client, body, logger):
     ack()
     try:
         bug = Bug()
@@ -50,7 +50,6 @@ def view_submission(ack, client, body, view, logger):
         bug.to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
         bug.expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
         bug.config = get_value('config', 'config-action', blocks)
-
     except (IndexError, KeyError, TypeError) as e:
         logger.error("Error, data has unexpected inner structure: {}".format(e))
     except SlackApiError as e:
@@ -63,78 +62,89 @@ def view_submission(ack, client, body, view, logger):
     # save submission 
     save_to_history(bug)
 
-    # send message to channel
-    channel_id=os.environ.get("SLACK_CHANNEL_ID")
-    client.chat_postMessage(
-        channel= channel_id,
-        type="mrkdwn",
-        text="*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config, 
-        # json.dumps() for parsing special unicode characters
-        blocks=json.dumps([
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Bug file submission from * <@"+bug.user_id+"> (see <"+bug.monday_update_url+"|here>)"
+    # send message to #dev-bugs
+    send_message(bug, client, logger)
+
+# Send summary of user submitted bug report to slack channel
+def send_message(bug, client, logger):
+    try:
+        channel_id=os.environ.get("SLACK_CHANNEL_ID")
+        client.chat_postMessage(
+            channel= channel_id,
+            type="mrkdwn",
+            # Backup text
+            text="*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config, 
+            # Blocks
+            # json.dumps() for parsing special unicode characters
+            blocks=json.dumps([
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Bug file submission from * <@"+bug.user_id+"> (see <"+bug.monday_update_url+"|here>)"
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Describe the bug* \n"+bug.description
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Site* \n"+bug.site
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Visibility* \n"+bug.visibility_text
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Impact* \n"+bug.impact_text
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*To Reproduce* \n"+bug.to_reproduce
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Expected behavior* \n"+bug.expected
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Configuration (e.g. browser type, screen size, device)* \n"+bug.config
+                    }
+                },
+                {
+                    "type": "divider"
                 }
-            },
-            {
-                "type": "divider"
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Describe the bug* \n"+bug.description
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Site* \n"+bug.site
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Visibility* \n"+bug.visibility_text
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Impact* \n"+bug.impact_text
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*To Reproduce* \n"+bug.to_reproduce
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Expected behavior* \n"+bug.expected
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Configuration (e.g. browser type, screen size, device)* \n"+bug.config
-                }
-            },
-            {
-                "type": "divider"
-            }
-        ])
-    )
+            ])
+        )
+    except (IndexError, KeyError, TypeError) as e:
+        logger.error("Error sending channel message, data structures don't match: {}".format(e))
+    except SlackApiError as e:
+        logger.error("Error sending channel message, some slack issue: {}".format(e))
 
 # Start your app
 if __name__ == "__main__":
