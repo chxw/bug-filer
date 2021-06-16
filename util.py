@@ -15,11 +15,6 @@ def get_text(block_id, action_id, blocks):
     except KeyError:
         return "N/A"
 
-def get_last_5_submits():
-    df=pd.read_csv('history.csv', sep=',',header=0)
-    last_5 = df.tail(5)
-    return last_5.values
-
 def save_to_history(bug):
     with open('history.csv', 'a', newline='') as file:
         history = csv.writer(file, delimiter=',')

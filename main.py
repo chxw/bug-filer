@@ -4,10 +4,12 @@ import json
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
-from slackblocks import Message, SectionBlock, DividerBlock
+from slackblocks import Message, SectionBlock, DividerBlock, Button
+
+import pandas as pd
 
 from monday import create_item, create_update
-from util import get_last_5_submits, get_value, get_text, save_to_history
+from util import get_value, get_text, save_to_history
 from bug import Bug
 
 # slack stuff
@@ -17,14 +19,28 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 @app.event("app_mention")
 def upload_image(client, body, logger):
     print(json.dumps(body, indent=4))
-    if body["event"]["files"]:
+    try:
         file_URL = body["event"]["files"][0]["url_private"]
         # reply to thread
         message_ts = body["event"]["event_ts"]
-        block = [SectionBlock("You uploaded a file, which monday item do you want to attach this to?"), DividerBlock()]
-        message = Message(channel="#test", text="text", blocks=block, thread_ts=message_ts)
+        df = pd.read_csv('history.csv', sep=',',header=0, error_bad_lines=False)
+        last_5 = df.tail(5)
+        blocks = [SectionBlock("You uploaded a file, which monday item do you want to attach this to?"), DividerBlock()]
+
+        for index in last_5.index:
+            description = str(last_5['description'][index])
+            monday_update_id = str(last_5['monday_update_id'][index])
+            blocks.append(SectionBlock(text=description, accessory=Button(text="Select", action_id=str(index))))
+
+        message = Message(channel="#test", text="text", blocks=blocks, thread_ts=message_ts)
         client.chat_postMessage(**message)
-        last_5 = get_last_5_submits()
+    except KeyError as e:
+        logger.error("No file uploaded: {}".format(e))
+
+@app.action("1053334092")
+def handle_some_action(ack, body, logger):
+    ack()
+    logger.info(body)
 
 # user clicks "File a bug" under Bolt icon
 @app.shortcut("file_bug")
@@ -92,7 +108,7 @@ def send_summary(bug, client, logger):
         # backup text
         text = "*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config
         # format blocks
-        header = SectionBlock("*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)")
+        title = SectionBlock("*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)")
         item_id = SectionBlock("*Item ID* \n"+bug.monday_item_id)
         description = SectionBlock("*Describe the bug* \n"+bug.description)
         site = SectionBlock("*Site* \n"+bug.site)
@@ -101,11 +117,9 @@ def send_summary(bug, client, logger):
         to_reproduce = SectionBlock( "*To Reproduce* \n"+bug.to_reproduce)
         expected = SectionBlock("*Expected behavior* \n"+bug.expected)
         config = SectionBlock("*Configuration (e.g. browser type, screen size, device)* \n"+bug.config)
-        blocks = [header, DividerBlock(), item_id, description, site, visibility, impact, to_reproduce, expected, config, DividerBlock()]
+        blocks = [title, DividerBlock(), item_id, description, site, visibility, impact, to_reproduce, expected, config, DividerBlock()]
         message = Message(channel="#test", text=text, blocks=blocks)
-        
         client.chat_postMessage(**message) # send message
-
     except (IndexError, KeyError, TypeError) as e:
         logger.error("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
