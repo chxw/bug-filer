@@ -1,10 +1,13 @@
 import os
 import json
+
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
+from slackblocks import Message, SectionBlock
+
 from monday import create_item, create_update
-from util import get_value, get_text, save_to_history
+from util import get_last_5_submits, get_value, get_text, save_to_history
 from bug import Bug
 
 # slack stuff
@@ -13,8 +16,13 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 # user sends file in #dev-bugs
 @app.event("message")
 def upload_image(client, body, logger):
+    print(body)
     if body["event"]["files"]:
-        send_message(client, "You uploaded a file, which monday item do you want to attach this to?", logger)
+        file_URL = body["event"]["files"][0]["url_private"]
+        block = SectionBlock("You uploaded a file, which monday item do you want to attach this to?")
+        message = Message(channel="#test", blocks=block)
+        client.chat_postMessage(**message)
+        get_last_5_submits()
 
 # user clicks "File a bug" under Bolt icon
 @app.shortcut("file_bug")
@@ -92,7 +100,7 @@ def send_summary(bug, client, logger):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_update_url+"|here>)"
+                        "text": "*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)"
                     }
                 },
                 {

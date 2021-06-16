@@ -55,9 +55,10 @@ def create_update(bug):
     try:
         r = requests.post(url=apiUrl, json=new_update, headers=headers) # make request
         r_json = r.json()
-        # print(r.json())
-        bug.update_id = r_json["data"]["create_update"]["id"] # save update id
-        bug.monday_update_url = "https://www.databento.monday.com/boards/"+board_id+"/pulses/"+bug.update_id # save update url
+        print(r.json())
+        bug.monday_update_id = r_json["data"]["create_update"]["id"] # save update id
+        bug.monday_item_url = "https://databento.monday.com/boards/"+board_id+"/pulses/"+bug.monday_item_id # save update url
+        bug.monday_update_url = bug.monday_item_url+"/posts/"+bug.monday_update_id
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error creating monday update {0}".format(e))

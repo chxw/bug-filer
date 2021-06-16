@@ -14,4 +14,5 @@ class Bug:
         self.config = ''
         self.monday_item_id = ''
         self.monday_update_id = ''
+        self.monday_item_url = ''
         self.monday_update_url = ''
