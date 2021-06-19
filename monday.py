@@ -7,7 +7,14 @@ api_key = os.environ.get("MONDAY_API_KEY")
 headers = {"Authorization" : api_key}
 board_id = os.environ.get("BOARD_ID")
 
-def get_priority(imp, vis):
+def _get_priority(imp, vis):
+    '''
+    Input: Impact (int), Visibility (int)
+
+    Calculate the Priority value (critical, high, medium, low) from the Impact / Visbility matrix. 
+
+    Returns: Priority (string)
+    '''
     if imp/vis >= 5/2:
         return "Critical"
     elif imp/vis >= 5/4:
@@ -18,6 +25,11 @@ def get_priority(imp, vis):
         return "Low"
 
 def create_item(bug):
+    '''
+    Input: bug object
+
+    Create monday item on board_id (find in .env).
+    '''
     mutate_query = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
     vars = {
         'myItemName' : bug.description,
@@ -25,7 +37,7 @@ def create_item(bug):
             'status_11' : {'label' : bug.site},
             'numbers' : bug.visibility,
             'numbers0' : bug.impact,
-            'status_18' : get_priority(bug.impact, bug.visibility)
+            'status_18' : _get_priority(bug.impact, bug.visibility)
         })
     }
     new_item = {'query' : mutate_query, 'variables' : vars}
@@ -41,7 +53,9 @@ def create_item(bug):
 
 def create_update(bug):
     '''
-    Create monday update on board_id (find in .env)
+    Input: bug object
+
+    Create monday update in a monday item, retreivied from the bug object's attribute bug.monday_item_id.
     '''
     # Format Monday update
     body = json.dumps(
@@ -67,7 +81,12 @@ def create_update(bug):
     except (IndexError, KeyError, TypeError) as e:
         print("Error creating monday update {0}".format(e))
 
-def add_file_to_update(update_id):
+def add_file_to_update(update_id, file):
+    '''
+    Input: update_id
+
+    Add file to monday update (update_id) using monday.com's /v2/file endpoint.
+    '''
     apiUrl = "https://api.monday.com/v2/file"
     q = f"""
             mutation add_file($file: File!) {{
@@ -78,12 +97,10 @@ def add_file_to_update(update_id):
                 }}
             }}
         """
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    f = dir_path+'/image.png'
 
     files = {
         'query': (None, q, 'image/png'),
-        'variables[file]': (f, open(f, 'rb'), 'multipart/form-data', {'Expires': '0'})
+        'variables[file]': (file, open(file, 'rb'), 'multipart/form-data', {'Expires': '0'})
     }
 
     try:
@@ -94,7 +111,12 @@ def add_file_to_update(update_id):
     except (IndexError, KeyError, TypeError) as e:
         print("Error uploading file to monday update {0}".format(e))
     
-def add_file_to_column(item_id):
+def add_file_to_column(item_id, file):
+    '''
+    Input: item_id
+
+    Add file to monday update (item_id) using monday.com's /v2/file endpoint.
+    '''
     apiUrl = "https://api.monday.com/v2/file"
     q = f"""
             mutation add_file($file: File!) {{
@@ -107,12 +129,9 @@ def add_file_to_column(item_id):
             }}
         """
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    f = dir_path+'/image.png'
-
     files = {
         'query': (None, q, 'image/png'),
-        'variables[file]': (f, open(f, 'rb'), 'multipart/form-data', {'Expires': '0'})
+        'variables[file]': (file, open(file, 'rb'), 'multipart/form-data', {'Expires': '0'})
     }
     try: 
         r = requests.post(url=apiUrl, files=files, headers=headers)

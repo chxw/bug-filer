@@ -3,26 +3,33 @@ import json
 import re
 import requests
 import pandas as pd
+from typing import Callable
 
-from slack_bolt import App
+from slack_bolt import App, BoltContext
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
-from slackblocks import Message, SectionBlock, DividerBlock
 
-from monday import add_file_to_column, add_file_to_update, create_item, create_update
-from util import get_value, get_text, save_to_history
+import monday
+import util
 from bug import Bug
-
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
+# middleware function
+def extract_subtype(body: dict, context: BoltContext, next: Callable):
+    context["subtype"] = body.get("event", {}).get("subtype", None)
+    next()
+
 # user uploads file to channel
 @app.event(
-    event={"type": "message", "subtype": re.compile("(me_message)|(file_share)")}
+    event={"type": "message", "subtype": re.compile("(me_message)|(file_share)")}, middleware=[extract_subtype]
 )
-def get_image(ack, client, body, logger):
+def get_image(ack, client, context, body, logger):
     ack()
+
+    subtype = context["subtype"]
+    print(f"subtype: {subtype}")
 
     try:
         # collect image URL
@@ -31,7 +38,7 @@ def get_image(ack, client, body, logger):
         message_ts = body["event"]["event_ts"]
 
         # get last 5 submitted bug reports
-        df = pd.read_csv('history.csv', sep=',',header=0, error_bad_lines=False)
+        df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False)
         last_5 = df.tail(5)
 
         # create dropdown menu of last 5 submitted bug reports
@@ -93,11 +100,11 @@ def get_image(ack, client, body, logger):
     except KeyError as e:
         logger.error("No file uploaded: {}".format(e))
 
+# user selects a monday item from dropdown
 @app.action("item_select")
 def upload_image(ack, client, body):
     ack()
 
-    print(body)
     # grab info
     item_id = body["actions"][0]["selected_option"]["value"]
     text = body["message"]["blocks"][0]["text"]["text"]
@@ -120,15 +127,19 @@ def upload_image(ack, client, body):
             handle.write(block)
 
     # get item_id
-    df = pd.read_csv('history.csv', sep=',',header=0, error_bad_lines=False)
+    df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False)
     df.set_index('monday_item_id', inplace=True)
     update_id = str(df['monday_update_id'][int(item_id)])
 
+    # get file
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    f = dir_path+'/'+filename
+
     # Upload file to update on monday.com
-    add_file_to_update(update_id=update_id)
+    monday.add_file_to_update(update_id=update_id, file=f)
 
     # Upload file to column on monday.com
-    add_file_to_column(item_id=item_id)
+    monday.add_file_to_column(item_id=item_id, file=f)
     
     # Delete message
     channel = body["container"]["channel_id"]
@@ -174,59 +185,103 @@ def view_submission(ack, client, body, logger):
         bug.user_id = body["user"]["id"]
         # digest info
         blocks = body["view"]["state"]["values"]
-        bug.site = get_value('site', 'site-action', blocks)
-        bug.description = get_value('bug-description', 'bug-description-action', blocks)
-        bug.visibility = int(get_value('visibility','visibility-action', blocks))
-        bug.visibility_text = get_text('visibility','visibility-action', blocks) #text
-        bug.impact = int(get_value('impact', 'impact-action', blocks))
-        bug.impact_text = get_text('impact', 'impact-action', blocks) # text
-        bug.to_reproduce = get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
-        bug.expected = get_value('expected-behavior', 'expected-behavior-action', blocks)
-        bug.config = get_value('config', 'config-action', blocks)
+        bug.site = util.get_value('site', 'site-action', blocks)
+        bug.description = util.get_value('bug-description', 'bug-description-action', blocks)
+        bug.visibility = int(util.get_value('visibility','visibility-action', blocks))
+        bug.visibility_text = util.get_text('visibility','visibility-action', blocks) #text
+        bug.impact = int(util.get_value('impact', 'impact-action', blocks))
+        bug.impact_text = util.get_text('impact', 'impact-action', blocks) # text
+        bug.to_reproduce = util.get_value('how-to-reproduce', 'how-to-reproduce-action', blocks)
+        bug.expected = util.get_value('expected-behavior', 'expected-behavior-action', blocks)
+        bug.config = util.get_value('config', 'config-action', blocks)
     except (IndexError, KeyError, TypeError) as e:
         logger.error("Error, data has unexpected inner structure: {}".format(e))
     except SlackApiError as e:
         logger.error("Error retrieving view: {}".format(e))
 
     # create monday item + update
-    create_item(bug)
-    create_update(bug)
+    monday.create_item(bug)
+    monday.create_update(bug)
 
     # save submission 
-    save_to_history(bug)
+    util.save_to_history(bug)
 
     # send message to #dev-bugs
-    send_summary(bug, client, logger)
+    _send_summary(bug, client, logger)
 
 # Send summary of user submitted bug report to slack channel
-def send_summary(bug, client, logger):
+def _send_summary(bug, client, logger):
     try:
         # backup text
         text = "*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config
         # format blocks
-        title = SectionBlock("*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)")
-        description = SectionBlock("*Describe the bug* \n"+bug.description)
-        site = SectionBlock("*Site* \n"+bug.site)
-        visibility = SectionBlock("*Visibility* \n"+bug.visibility_text)
-        impact = SectionBlock("*Impact* \n"+bug.impact_text)
-        to_reproduce = SectionBlock( "*To Reproduce* \n"+bug.to_reproduce)
-        expected = SectionBlock("*Expected behavior* \n"+bug.expected)
-        config = SectionBlock("*Configuration (e.g. browser type, screen size, device)* \n"+bug.config)
-        blocks = [title, DividerBlock(), item_id, description, site, visibility, impact, to_reproduce, expected, config, DividerBlock()]
-        message = Message(channel="#test", text=text, blocks=blocks)
-        client.chat_postMessage(**message) # send message
-    except (IndexError, KeyError, TypeError) as e:
-        logger.error("Error sending channel message, data structures don't match: {}".format(e))
-    except SlackApiError as e:
-        logger.error("Error sending channel message, some slack issue: {}".format(e))
-    
-def send_message(client, text, logger):
-    try:
-        channel_id=os.environ.get("SLACK_CHANNEL_ID")
+        blocks = [{
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)",
+                        "verbatim": False
+                    }
+                    }, {
+                        "type": "divider",
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Describe the bug* \n "+bug.description,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Site* \n "+bug.site,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Visibility* \n "+bug.visibility_text,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Impact* \n "+bug.impact_text,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*To Reproduce* \n "+bug.to_reproduce,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Expected behavior* \n "+bug.expected,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Configuration (e.g. browser type, screen size, device)* \n"+bug.config,
+                            "verbatim": False
+                        }
+                    }, {
+                        "type": "divider"
+                    }]
+        # send message
         client.chat_postMessage(
-            channel= channel_id,
-            type="mrkdwn",
-            text=text)
+            channel = os.environ.get("SLACK_CHANNEL_ID"),
+            text = text,
+            blocks = blocks
+        )
     except (IndexError, KeyError, TypeError) as e:
         logger.error("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
