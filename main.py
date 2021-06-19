@@ -1,46 +1,139 @@
 import os
 import json
+import re
+import requests
+import pandas as pd
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
-from slackblocks import Message, SectionBlock, DividerBlock, Button
+from slackblocks import Message, SectionBlock, DividerBlock
 
-import pandas as pd
-
-from monday import create_item, create_update
+from monday import add_file_to_update, create_item, create_update
 from util import get_value, get_text, save_to_history
 from bug import Bug
+
+# Import smtplib for the actual sending function
+import smtplib
+
+# And imghdr to find the types of our images
+import imghdr
+
+# Here are the email package modules we'll need
+from email.message import EmailMessage
+
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
-# user mentions @Bug Filer
-@app.event("app_mention")
-def upload_image(client, body, logger):
-    print(json.dumps(body, indent=4))
+# user uploads file to channel
+@app.event(
+    event={"type": "message", "subtype": re.compile("(me_message)|(file_share)")}
+)
+def get_image(ack, client, body, logger):
+    ack()
     try:
         file_URL = body["event"]["files"][0]["url_private"]
         # reply to thread
         message_ts = body["event"]["event_ts"]
+
+        # get last 5 submitted bug reports
         df = pd.read_csv('history.csv', sep=',',header=0, error_bad_lines=False)
         last_5 = df.tail(5)
-        blocks = [SectionBlock("You uploaded a file, which monday item do you want to attach this to?"), DividerBlock()]
-
+        options = []
         for index in last_5.index:
-            description = str(last_5['description'][index])
-            monday_update_id = str(last_5['monday_update_id'][index])
-            blocks.append(SectionBlock(text=description, accessory=Button(text="Select", action_id=str(index))))
-
-        message = Message(channel="#test", text="text", blocks=blocks, thread_ts=message_ts)
-        client.chat_postMessage(**message)
+            text = str(last_5['description'][index])
+            value = str(last_5['monday_update_id'][index])
+            options.append(
+                            {
+                            "text": {
+                                "type": "plain_text",
+                                "text": text
+                            },
+                            "value": value
+                            })
+        blocks = [
+            {
+                "type": "section",
+                "block_id": "which_item",
+                "text": {
+                "type": "mrkdwn",
+                "text": "You uploaded a <"+file_URL+"|file>, which monday item do you want to attach this to?"
+                },
+                "accessory": {
+                "action_id": "item_select",
+                "type": "static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select an item"
+                },
+                "confirm": {
+                    "title": {
+                        "type": "plain_text",
+                        "text": "Are you sure?"
+                    },
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "This will upload the image to the chosen monday item."
+                    },
+                    "confirm": {
+                        "type": "plain_text",
+                        "text": "Confirm"
+                    },
+                    "deny": {
+                        "type": "plain_text",
+                        "text": "Cancel"
+                    }
+                },
+                "options": options
+                },
+            }
+        ]
+        client.chat_postMessage(
+            channel = os.environ.get("SLACK_CHANNEL_ID"),
+            text = "Error with blocks",
+            blocks = blocks,
+            thread_ts=message_ts
+        )
     except KeyError as e:
         logger.error("No file uploaded: {}".format(e))
 
-@app.action("1053334092")
-def handle_some_action(ack, body, logger):
+@app.action("item_select")
+def upload_image(ack, client, body, logger):
     ack()
-    logger.info(body)
+
+    # grab info
+    update_id = body["actions"][0]["selected_option"]["value"]
+    text = body["message"]["blocks"][0]["text"]["text"]
+    try:
+        url = re.search('<(.*)\|', text).group(1)
+    except AttributeError:
+        #url not found
+        url = '' # apply your error handling
+    print(url)
+
+    ## Download file
+    filename = url.split("/")[-1]
+    headers = {'Authorization': 'Bearer '+os.environ["SLACK_BOT_TOKEN"]}
+    with open(filename, 'wb') as handle:
+        response = requests.get(url, headers=headers, stream=True)
+        if not response.ok:
+            print(response)
+        for block in response.iter_content(1024):
+            if not block:
+                break
+            handle.write(block)
+
+    # Upload file to monday.com
+    add_file_to_update(update_id=update_id)
+    
+    # Delete message
+    channel = body["container"]["channel_id"]
+    message_ts = body["container"]["message_ts"]
+    client.chat_delete(
+        channel=channel,
+        ts = message_ts
+    )
 
 # user clicks "File a bug" under Bolt icon
 @app.shortcut("file_bug")

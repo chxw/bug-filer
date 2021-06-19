@@ -55,10 +55,65 @@ def create_update(bug):
     try:
         r = requests.post(url=apiUrl, json=new_update, headers=headers) # make request
         r_json = r.json()
-        print(r.json())
+        # print(r.json())
         bug.monday_update_id = r_json["data"]["create_update"]["id"] # save update id
         bug.monday_item_url = "https://databento.monday.com/boards/"+board_id+"/pulses/"+bug.monday_item_id # save update url
         bug.monday_update_url = bug.monday_item_url+"/posts/"+bug.monday_update_id
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error creating monday update {0}".format(e))
+
+def add_file_to_update(update_id):
+    apiUrl = "https://api.monday.com/v2/file"
+    q = f"""
+            mutation add_file($file: File!) {{
+                add_file_to_update (update_id: {int(update_id)},
+                            file: $file
+                        ){{
+                    id
+                }}
+            }}
+        """
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    f = dir_path+'/image.png'
+
+    files = {
+        'query': (None, q, 'image/png'),
+        'variables[file]': (f, open(f, 'rb'), 'multipart/form-data', {'Expires': '0'})
+    }
+
+    try:
+        r = requests.post(url=apiUrl, files=files, headers=headers) #
+        r_json = r.json()
+        print(r_json)
+        return(True)
+
+    except (IndexError, KeyError, TypeError) as e:
+        print("Error uploading file to monday update {0}".format(e))
+    
+    return(False)
+
+def add_file_to_column(item_id):
+    apiUrl = "https://api.monday.com/v2/file"
+    q = f"""
+            mutation add_file($file: File!) {{
+                add_file_to_column (item_id: {int(item_id)},
+                            column_id: files,
+                            file: $file
+                        ){{
+                    id
+                }}
+            }}
+        """
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    f = dir_path+'/image.png'
+
+    files = {
+        'query': (None, q, 'image/png'),
+        'variables[file]': (f, open(f, 'rb'), 'multipart/form-data', {'Expires': '0'})
+    }
+    
+    r = requests.post(url=apiUrl, files=files, headers=headers)
+    r_json = r.json()
+    print(r_json)
