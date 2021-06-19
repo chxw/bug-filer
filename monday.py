@@ -40,6 +40,10 @@ def create_item(bug):
         print("Error creating monday item {0}".format(e))
 
 def create_update(bug):
+    '''
+    Create monday update on board_id (find in .env)
+    '''
+    # Format Monday update
     body = json.dumps(
         "<p><strong>Describe the bug</strong></p>"+bug.description+
         "<p></p><p><strong>Visibility</strong></p>"+bug.visibility_text+
@@ -86,13 +90,10 @@ def add_file_to_update(update_id):
         r = requests.post(url=apiUrl, files=files, headers=headers) #
         r_json = r.json()
         print(r_json)
-        return(True)
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error uploading file to monday update {0}".format(e))
     
-    return(False)
-
 def add_file_to_column(item_id):
     apiUrl = "https://api.monday.com/v2/file"
     q = f"""
@@ -113,7 +114,9 @@ def add_file_to_column(item_id):
         'query': (None, q, 'image/png'),
         'variables[file]': (f, open(f, 'rb'), 'multipart/form-data', {'Expires': '0'})
     }
-    
-    r = requests.post(url=apiUrl, files=files, headers=headers)
-    r_json = r.json()
-    print(r_json)
+    try: 
+        r = requests.post(url=apiUrl, files=files, headers=headers)
+        r_json = r.json()
+        print(r_json)
+    except (IndexError, KeyError, TypeError) as e:
+        print("Error adding file to column on monday {0}".format(e))

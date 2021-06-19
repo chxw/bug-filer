@@ -9,18 +9,9 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
 from slackblocks import Message, SectionBlock, DividerBlock
 
-from monday import add_file_to_update, create_item, create_update
+from monday import add_file_to_column, add_file_to_update, create_item, create_update
 from util import get_value, get_text, save_to_history
 from bug import Bug
-
-# Import smtplib for the actual sending function
-import smtplib
-
-# And imghdr to find the types of our images
-import imghdr
-
-# Here are the email package modules we'll need
-from email.message import EmailMessage
 
 
 # slack stuff
@@ -32,25 +23,29 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 )
 def get_image(ack, client, body, logger):
     ack()
+
     try:
+        # collect image URL
         file_URL = body["event"]["files"][0]["url_private"]
-        # reply to thread
+        # collect ts for message to respond to 
         message_ts = body["event"]["event_ts"]
 
         # get last 5 submitted bug reports
         df = pd.read_csv('history.csv', sep=',',header=0, error_bad_lines=False)
         last_5 = df.tail(5)
+
+        # create dropdown menu of last 5 submitted bug reports
         options = []
         for index in last_5.index:
-            text = str(last_5['description'][index])
-            value = str(last_5['monday_update_id'][index])
+            description = str(last_5['description'][index])
+            item_id = str(last_5['monday_item_id'][index])
             options.append(
                             {
                             "text": {
                                 "type": "plain_text",
-                                "text": text
+                                "text": description
                             },
-                            "value": value
+                            "value": item_id
                             })
         blocks = [
             {
@@ -99,20 +94,20 @@ def get_image(ack, client, body, logger):
         logger.error("No file uploaded: {}".format(e))
 
 @app.action("item_select")
-def upload_image(ack, client, body, logger):
+def upload_image(ack, client, body):
     ack()
 
+    print(body)
     # grab info
-    update_id = body["actions"][0]["selected_option"]["value"]
+    item_id = body["actions"][0]["selected_option"]["value"]
     text = body["message"]["blocks"][0]["text"]["text"]
+    # grab image URL from text
     try:
         url = re.search('<(.*)\|', text).group(1)
     except AttributeError:
-        #url not found
-        url = '' # apply your error handling
-    print(url)
+        url = ''
 
-    ## Download file
+    # Download file
     filename = url.split("/")[-1]
     headers = {'Authorization': 'Bearer '+os.environ["SLACK_BOT_TOKEN"]}
     with open(filename, 'wb') as handle:
@@ -124,8 +119,16 @@ def upload_image(ack, client, body, logger):
                 break
             handle.write(block)
 
-    # Upload file to monday.com
+    # get item_id
+    df = pd.read_csv('history.csv', sep=',',header=0, error_bad_lines=False)
+    df.set_index('monday_item_id', inplace=True)
+    update_id = str(df['monday_update_id'][int(item_id)])
+
+    # Upload file to update on monday.com
     add_file_to_update(update_id=update_id)
+
+    # Upload file to column on monday.com
+    add_file_to_column(item_id=item_id)
     
     # Delete message
     channel = body["container"]["channel_id"]
@@ -202,7 +205,6 @@ def send_summary(bug, client, logger):
         text = "*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config
         # format blocks
         title = SectionBlock("*Bug file submission from * <@"+bug.user_id+"> \n (see <"+bug.monday_item_url+"|here>)")
-        item_id = SectionBlock("*Item ID* \n"+bug.monday_item_id)
         description = SectionBlock("*Describe the bug* \n"+bug.description)
         site = SectionBlock("*Site* \n"+bug.site)
         visibility = SectionBlock("*Visibility* \n"+bug.visibility_text)
@@ -229,6 +231,11 @@ def send_message(client, text, logger):
         logger.error("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
         logger.error("Error sending channel message, some slack issue: {}".format(e))
+
+@app.event("message")
+def handle_message_events():
+    # ignore messages
+    pass
 
 # Start your app
 if __name__ == "__main__":
