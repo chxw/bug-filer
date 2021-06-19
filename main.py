@@ -3,33 +3,24 @@ import json
 import re
 import requests
 import pandas as pd
-from typing import Callable
 
-from slack_bolt import App, BoltContext
+from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk.errors import SlackApiError
 
-import monday
-import util
-from bug import Bug
+from helpers import monday
+from helpers import util
+from helpers.bug import Bug
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
-# middleware function
-def extract_subtype(body: dict, context: BoltContext, next: Callable):
-    context["subtype"] = body.get("event", {}).get("subtype", None)
-    next()
-
 # user uploads file to channel
 @app.event(
-    event={"type": "message", "subtype": re.compile("(me_message)|(file_share)")}, middleware=[extract_subtype]
+    event={"type": "message", "subtype": "file_share"}
 )
-def get_image(ack, client, context, body, logger):
+def get_image(ack, client, body, logger):
     ack()
-
-    subtype = context["subtype"]
-    print(f"subtype: {subtype}")
 
     try:
         # collect image URL
@@ -148,6 +139,9 @@ def upload_image(ack, client, body):
         channel=channel,
         ts = message_ts
     )
+    
+    # Delete locally saved file
+    os.remove(f)
 
 # user clicks "File a bug" under Bolt icon
 @app.shortcut("file_bug")
@@ -157,7 +151,7 @@ def open_modal(ack, shortcut, client, logger):
     '''
     ack()
 
-    with open('bug-file.json') as file:
+    with open('helpers/bug-file.json') as file:
         bug_file = json.load(file)
     try:
         # Call the views_open method using the built-in WebClient
@@ -288,7 +282,7 @@ def _send_summary(bug, client, logger):
         logger.error("Error sending channel message, some slack issue: {}".format(e))
 
 @app.event("message")
-def handle_message_events():
+def ignore_message():
     # ignore messages
     pass
 

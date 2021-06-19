@@ -1,11 +1,15 @@
 import requests
 import os
 import json
+import mimetypes
+from datetime import datetime as dt
 
 apiUrl = "https://api.monday.com/v2"
 api_key = os.environ.get("MONDAY_API_KEY")
 headers = {"Authorization" : api_key}
 board_id = os.environ.get("BOARD_ID")
+output = open('data/output.txt', 'a')
+output.write(str(dt.now())+': \n')
 
 def _get_priority(imp, vis):
     '''
@@ -45,11 +49,13 @@ def create_item(bug):
     try:
         r = requests.post(url=apiUrl, json=new_item, headers=headers) # make request
         r_json = r.json()
-        # print(r_json)
         bug.monday_item_id = r_json["data"]["create_item"]["id"] # save item id
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error creating monday item {0}".format(e))
+    
+    output.write('Successfully created item: ')
+    output.write(str(r_json)+' \n') # write to output file
 
 def create_update(bug):
     '''
@@ -70,16 +76,26 @@ def create_update(bug):
 
     mutate_query = 'mutation { create_update (item_id:'+bug.monday_item_id+', body:'+body+') { id } }'
     new_update = {'query' : mutate_query}
+    
     try:
         r = requests.post(url=apiUrl, json=new_update, headers=headers) # make request
         r_json = r.json()
-        # print(r.json())
-        bug.monday_update_id = r_json["data"]["create_update"]["id"] # save update id
-        bug.monday_item_url = "https://databento.monday.com/boards/"+board_id+"/pulses/"+bug.monday_item_id # save update url
-        bug.monday_update_url = bug.monday_item_url+"/posts/"+bug.monday_update_id
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error creating monday update {0}".format(e))
+
+    try:
+        # save bug attribtues
+        bug.monday_update_id = r_json["data"]["create_update"]["id"] # save update id
+        bug.monday_item_url = "https://databento.monday.com/boards/"+board_id+"/pulses/"+bug.monday_item_id # save update url
+        bug.monday_update_url = bug.monday_item_url+"/posts/"+bug.monday_update_id
+    except (IndexError, KeyError, TypeError) as e:
+        print("Error accessing response_json and saving bug attributes after creating monday update {0}".format(e))
+    
+    # write to output file
+    output.write("Successfully created update: ")
+    output.write(str(r_json)+' \n') 
+
 
 def add_file_to_update(update_id, file):
     '''
@@ -98,18 +114,25 @@ def add_file_to_update(update_id, file):
             }}
         """
 
+    mimetype = mimetypes.guess_type(file, strict=True)
+    type = mimetype[0]
+
     files = {
-        'query': (None, q, 'image/png'),
+        'query': (None, q, type),
         'variables[file]': (file, open(file, 'rb'), 'multipart/form-data', {'Expires': '0'})
     }
 
     try:
         r = requests.post(url=apiUrl, files=files, headers=headers) #
         r_json = r.json()
-        print(r_json)
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error uploading file to monday update {0}".format(e))
+
+    # write to output file
+    output.write('Succesfully added '+file+' to update '+update_id+': ')
+    output.write(str(r_json)+' \n') # write to output file
+
     
 def add_file_to_column(item_id, file):
     '''
@@ -128,14 +151,22 @@ def add_file_to_column(item_id, file):
                 }}
             }}
         """
+    
+    mimetype = mimetypes.guess_type(file, strict=True)
+    type = mimetype[0]
 
     files = {
-        'query': (None, q, 'image/png'),
+        'query': (None, q, type),
         'variables[file]': (file, open(file, 'rb'), 'multipart/form-data', {'Expires': '0'})
     }
+
     try: 
         r = requests.post(url=apiUrl, files=files, headers=headers)
         r_json = r.json()
-        print(r_json)
     except (IndexError, KeyError, TypeError) as e:
         print("Error adding file to column on monday {0}".format(e))
+    
+    # write to output file
+    output.write('Succesfully added '+file+' to item '+item_id+' column : ')
+    output.write(str(r_json)+' \n') # write to output file
+
