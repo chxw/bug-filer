@@ -54,8 +54,9 @@ def create_item(bug):
     except (IndexError, KeyError, TypeError) as e:
         print("Error creating monday item {0}".format(e))
     
+    # write to output file
     output.write('Successfully created item: ')
-    output.write(str(r_json)+' \n') # write to output file
+    output.write(str(r_json)+' \n')
 
 def create_update(bug):
     '''
@@ -131,7 +132,7 @@ def add_file_to_update(update_id, file):
 
     # write to output file
     output.write('Succesfully added '+file+' to update '+update_id+': ')
-    output.write(str(r_json)+' \n') # write to output file
+    output.write(str(r_json)+' \n')
 
     
 def add_file_to_column(item_id, file):
@@ -168,5 +169,5 @@ def add_file_to_column(item_id, file):
     
     # write to output file
     output.write('Succesfully added '+file+' to item '+item_id+' column : ')
-    output.write(str(r_json)+' \n') # write to output file
+    output.write(str(r_json)+' \n')
 

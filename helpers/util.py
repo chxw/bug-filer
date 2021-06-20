@@ -1,5 +1,8 @@
 import csv
+import os
 from datetime import datetime as dt
+import requests
+import pandas as pd
 
 def get_value(block_id, action_id, blocks):
     try:
@@ -20,3 +23,21 @@ def save_to_history(bug):
         row = [dt.now(), bug.user, bug.name, bug.user_id, bug.site, bug.description, bug.visibility, bug.impact, bug.expected, bug.to_reproduce, bug.config, bug.monday_item_id, bug.monday_update_id, bug.monday_item_url, bug.monday_update_url]
         history.writerow(row)
         file.close()
+    
+def get_from_history(column, column_value):
+    df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False)
+    df.set_index('monday_item_id', inplace=True)
+    return df[column][column_value]
+
+def download_file_from_URL(url):
+    filename = url.split("/")[-1]
+    headers = {'Authorization': 'Bearer '+os.environ["SLACK_BOT_TOKEN"]}
+    with open(filename, 'wb') as handle:
+        response = requests.get(url, headers=headers, stream=True)
+        if not response.ok:
+            print(response)
+        for block in response.iter_content(1024):
+            if not block:
+                break
+            handle.write(block)
+    return filename

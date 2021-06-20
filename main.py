@@ -1,7 +1,6 @@
 import os
-import json
+# import json
 import re
-import requests
 import pandas as pd
 
 from slack_bolt import App
@@ -19,7 +18,7 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 @app.event(
     event={"type": "message", "subtype": "file_share"}
 )
-def get_image(ack, client, body, logger):
+def get_image(ack, client, body):
     ack()
 
     try:
@@ -79,7 +78,24 @@ def get_image(ack, client, body, logger):
                     }
                 },
                 "options": options
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Or you can create a new item:"
                 },
+                "accessory": {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Create Item",
+                        "emoji": True
+                    },
+                    "value": file_URL,
+                    "action_id": "create_item"
+                }
             }
         ]
         client.chat_postMessage(
@@ -89,7 +105,7 @@ def get_image(ack, client, body, logger):
             thread_ts=message_ts
         )
     except KeyError as e:
-        logger.error("No file uploaded: {}".format(e))
+        print("No file uploaded: {}".format(e))
 
 # user selects a monday item from dropdown
 @app.action("item_select")
@@ -105,22 +121,26 @@ def upload_image(ack, client, body):
     except AttributeError:
         url = ''
 
-    # Download file
-    filename = url.split("/")[-1]
-    headers = {'Authorization': 'Bearer '+os.environ["SLACK_BOT_TOKEN"]}
-    with open(filename, 'wb') as handle:
-        response = requests.get(url, headers=headers, stream=True)
-        if not response.ok:
-            print(response)
-        for block in response.iter_content(1024):
-            if not block:
-                break
-            handle.write(block)
+    add_image_to_monday(url, item_id)
+    
+    # Delete message
+    client.chat_delete(
+        channel=body["container"]["channel_id"],
+        ts = body["container"]["message_ts"]
+    )
 
-    # get item_id
-    df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False)
-    df.set_index('monday_item_id', inplace=True)
-    update_id = str(df['monday_update_id'][int(item_id)])
+def add_image_to_monday(url, item_id, **kwargs):
+    # Download private slack file
+    filename = util.download_file_from_URL(url)
+
+    # get update_id
+    if 'update_id' in kwargs:
+        update_id = kwargs.get('update_id')
+    else:
+        try:
+            update_id = str(util.get_from_history('monday_update_id', int(item_id)))
+        except KeyError as e:
+            print("Row in history.csv not found: {}".format(e))
 
     # get file
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -132,53 +152,341 @@ def upload_image(ack, client, body):
     # Upload file to column on monday.com
     monday.add_file_to_column(item_id=item_id, file=f)
     
-    # Delete message
-    channel = body["container"]["channel_id"]
-    message_ts = body["container"]["message_ts"]
-    client.chat_delete(
-        channel=channel,
-        ts = message_ts
-    )
-    
     # Delete locally saved file
     os.remove(f)
 
-# user clicks "File a bug" under Bolt icon
+# user clicks "Create Item" in image attachment message
+@app.action("create_item")
+def file_bug_with_image(ack, client, body):
+    ack()
+
+    file_URL = body["actions"][0]["value"]
+    trigger_id = body["trigger_id"]
+
+    file_bug(trigger_id, client, file_URL=file_URL)
+
+    # Delete message
+    client.chat_delete(
+        channel=body["container"]["channel_id"],
+        ts = body["container"]["message_ts"]
+    )
+
+# user uses "file_bug" shortcut
 @app.shortcut("file_bug")
-def open_modal(ack, shortcut, client, logger):
+def open_modal(ack, shortcut, body, client):
     '''
     The open_modal shortcut listens to a shortcut with the callback_id "file_bug"
     '''
     ack()
 
-    with open('helpers/bug-file.json') as file:
-        bug_file = json.load(file)
+    trigger_id = shortcut["trigger_id"]
+    file_URL = None
+
+    try: 
+        ## future feature, extract text from message and auto-fill bug file
+        # text = body["message"]["text"]
+        file_URL = body["message"]["files"][0]["url_private"]
+    except KeyError as e:
+        print("Error accessing file from shortcut: {}".format(e))
+
+    file_bug(trigger_id, client, file_URL=file_URL)
+
+def file_bug(trigger_id, client, **kwargs):
+    file_URL = kwargs.get('file_URL', None)
+
+    # with open('helpers/bug-file.json') as file:
+    #     bug_file = json.load(file)
+
+    bug_file = {
+                    "type": "modal",
+                    "callback_id": "view-id",
+                    "private_metadata": file_URL,
+                    "title": {
+                        "type": "plain_text",
+                        "text": "File a bug",
+                        "emoji": True
+                    },
+                    "submit": {
+                        "type": "plain_text",
+                        "text": "Submit",
+                        "emoji": True
+                    },
+                    "close": {
+                        "type": "plain_text",
+                        "text": "Cancel",
+                        "emoji": True
+                    },
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "This form will submit your bug to the #dev-bugs board on monday.com",
+                                "emoji": True
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"site",
+                            "element": {
+                                "type": "static_select",
+                                "placeholder": {
+                                    "type": "plain_text",
+                                    "text": "Select site",
+                                    "emoji": True
+                                },
+                                "options": [
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "multidocs",
+                                            "emoji": True
+                                        },
+                                        "value": "Multidocs"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "platform",
+                                            "emoji": True
+                                        },
+                                        "value": "Platform"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "both",
+                                            "emoji": True
+                                        },
+                                        "value": "Both"
+                                    }
+                                ],
+                                "action_id": "site-action"
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Site",
+                                "emoji": True
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"bug-description",
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Describe the bug",
+                                "emoji": True
+                            },
+                            "element": {
+                                "type": "plain_text_input",
+                                "multiline": True,
+                                "action_id": "bug-description-action"
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"visibility",
+                            "element": {
+                                "type": "static_select",
+                                "placeholder": {
+                                    "type": "plain_text",
+                                    "text": "Rate visibility",
+                                    "emoji": True
+                                },
+                                "options": [
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "1️⃣ (login/signup, docs - getting started, access key management)",
+                                            "emoji": True
+                                        },
+                                        "value": "1"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "2️⃣ clicks away",
+                                            "emoji": True
+                                        },
+                                        "value": "2"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "3️⃣ clicks away",
+                                            "emoji": True
+                                        },
+                                        "value": "3"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "4️⃣ clicks away",
+                                            "emoji": True
+                                        },
+                                        "value": "4"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "5️⃣ clicks away",
+                                            "emoji": True
+                                        },
+                                        "value": "5"
+                                    }
+                                ],
+                                "action_id": "visibility-action"
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Visibility",
+                                "emoji": True
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"impact",
+                            "element": {
+                                "type": "static_select",
+                                "placeholder": {
+                                    "type": "plain_text",
+                                    "text": "Rate impact",
+                                    "emoji": True
+                                },
+                                "options": [
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "5️⃣ = Huge (angry, pain, crying, $10^5 ARR)",
+                                            "emoji": True
+                                        },
+                                        "value": "5"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "4️⃣ = Large (anger, dismay, swearing, $10^4 ARR)",
+                                            "emoji": True
+                                        },
+                                        "value": "4"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "3️⃣ = Big (frustration, annoyance, $10^3 ARR)",
+                                            "emoji": True
+                                        },
+                                        "value": "3"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "2️⃣ = Medium (eye-rolling, $10^2 ARR)",
+                                            "emoji": True
+                                        },
+                                        "value": "2"
+                                    },
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "1️⃣ = Small (may make you laugh instead of cry, $10^1 ARR)",
+                                            "emoji": True
+                                        },
+                                        "value": "1"
+                                    }
+                                ],
+                                "action_id": "impact-action"
+                            },
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Impact",
+                                "emoji": True
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"how-to-reproduce",
+                            "label": {
+                                "type": "plain_text",
+                                "text": "To Reproduce",
+                                "emoji": True
+                            },
+                            "element": {
+                                "type": "plain_text_input",
+                                "multiline": True,
+                                "action_id": "how-to-reproduce-action"
+                            }
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"expected-behavior",
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Expected behavior",
+                                "emoji": True
+                            },
+                            "element": {
+                                "type": "plain_text_input",
+                                "multiline": True,
+                                "action_id": "expected-behavior-action"
+                            },
+                            "optional": True
+                        },
+                        {
+                            "type": "input",
+                            "block_id":"config",
+                            "label": {
+                                "type": "plain_text",
+                                "text": "Configuration (e.g. browser type, screen size, device)",
+                                "emoji": True
+                            },
+                            "element": {
+                                "type": "plain_text_input",
+                                "multiline": False,
+                                "action_id": "config-action"
+                            },
+                            "optional": True
+                        }
+                    ]
+                }
+
     try:
         # Call the views_open method using the built-in WebClient
-        api_response = client.views_open(
-            trigger_id=shortcut["trigger_id"],
+        client.views_open(
+            trigger_id=trigger_id,
             # View payload for a modal
             view=bug_file)
-        logger.info(api_response)
         
     except SlackApiError as e:
-        logger.error("Error creating conversation: {}".format(e))
+        print("Error creating conversation: {}".format(e))
 
 # open user submission
 @app.view("view-id")
-def view_submission(ack, client, body, logger):
+def view_submission(ack, client, body):
     '''
     Open view of modal of callback_id "view-id"
     '''
     ack()
+
+    bug = Bug()
+
+    if body["view"]["private_metadata"] != '':
+        file_upload = True
+
     try:
-        bug = Bug()
+        # if file upload, grab URL
+        if file_upload:
+            bug.file_URL = body["view"]["private_metadata"]
         # who submitted?
         bug.user = body["user"]["username"]
         bug.name = body["user"]["name"]
         bug.user_id = body["user"]["id"]
         # digest info
         blocks = body["view"]["state"]["values"]
+        # fill out bug info
         bug.site = util.get_value('site', 'site-action', blocks)
         bug.description = util.get_value('bug-description', 'bug-description-action', blocks)
         bug.visibility = int(util.get_value('visibility','visibility-action', blocks))
@@ -189,22 +497,26 @@ def view_submission(ack, client, body, logger):
         bug.expected = util.get_value('expected-behavior', 'expected-behavior-action', blocks)
         bug.config = util.get_value('config', 'config-action', blocks)
     except (IndexError, KeyError, TypeError) as e:
-        logger.error("Error, data has unexpected inner structure: {}".format(e))
+        print("Error, data has unexpected inner structure: {}".format(e))
     except SlackApiError as e:
-        logger.error("Error retrieving view: {}".format(e))
+        print("Error retrieving view: {}".format(e))
 
     # create monday item + update
     monday.create_item(bug)
     monday.create_update(bug)
 
+    # add file to monday
+    if file_upload:
+        add_image_to_monday(url=bug.file_URL, item_id=bug.monday_item_id, update_id=bug.monday_update_id)
+
     # save submission 
     util.save_to_history(bug)
 
     # send message to #dev-bugs
-    _send_summary(bug, client, logger)
+    _send_summary(bug, client)
 
 # Send summary of user submitted bug report to slack channel
-def _send_summary(bug, client, logger):
+def _send_summary(bug, client):
     try:
         # backup text
         text = "*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(bug.impact)+"\n\n*To Reproduce*\n"+bug.to_reproduce+"\n\n*Expected behavior*\n"+bug.expected+"\n\n*Configuration (e.g. browser type, screen size, device)*\n"+bug.config
@@ -277,9 +589,9 @@ def _send_summary(bug, client, logger):
             blocks = blocks
         )
     except (IndexError, KeyError, TypeError) as e:
-        logger.error("Error sending channel message, data structures don't match: {}".format(e))
+        print("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
-        logger.error("Error sending channel message, some slack issue: {}".format(e))
+        print("Error sending channel message, some slack issue: {}".format(e))
 
 @app.event("message")
 def ignore_message():

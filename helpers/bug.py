@@ -16,3 +16,4 @@ class Bug:
         self.monday_update_id = ''
         self.monday_item_url = ''
         self.monday_update_url = ''
+        self.file_URL = ''

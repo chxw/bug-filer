@@ -1,3 +1,3 @@
 # TODO
-- Remove slackblocks dependency
+ [X] Remove slackblocks dependency
 

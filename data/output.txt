@@ -1,3 +1,48 @@
 2021-06-19 16:04:01.524259: 
 Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to update 1053334594: {'data': {'add_file_to_update': {'id': '244100036'}}, 'account_id': 5933685} 
 Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to item 1397158324 column : {'data': {'add_file_to_column': {'id': '244100039'}}, 'account_id': 5933685} 
+2021-06-20 10:41:12.075222: 
+2021-06-20 10:41:18.556552: 
+Successfully created item: {'data': {'create_item': {'id': '1406543744'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056701654'}}, 'account_id': 5933685} 
+2021-06-20 10:43:07.989215: 
+Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to update 1056701654: {'data': {'add_file_to_update': {'id': '244227573'}}, 'account_id': 5933685} 
+Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to item 1406543744 column : {'data': {'add_file_to_column': {'id': '244227575'}}, 'account_id': 5933685} 
+2021-06-20 11:11:34.254567: 
+2021-06-20 11:14:49.451041: 
+2021-06-20 11:15:31.340785: 
+2021-06-20 11:38:19.870348: 
+2021-06-20 11:38:48.559630: 
+2021-06-20 11:39:27.175524: 
+2021-06-20 11:42:20.006254: 
+2021-06-20 11:43:07.660184: 
+Successfully created item: {'data': {'create_item': {'id': '1406591178'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056715755'}}, 'account_id': 5933685} 
+2021-06-20 11:43:28.372142: 
+Successfully created item: {'data': {'create_item': {'id': '1406591370'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056715860'}}, 'account_id': 5933685} 
+2021-06-20 11:46:19.677600: 
+Successfully created item: {'data': {'create_item': {'id': '1406592952'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056716495'}}, 'account_id': 5933685} 
+2021-06-20 11:49:14.010029: 
+Successfully created item: {'data': {'create_item': {'id': '1406595963'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056717100'}}, 'account_id': 5933685} 
+2021-06-20 11:51:43.020745: 
+Successfully created item: {'data': {'create_item': {'id': '1406597212'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056717536'}}, 'account_id': 5933685} 
+2021-06-20 11:52:58.984825: 
+Successfully created item: {'data': {'create_item': {'id': '1406597929'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056717728'}}, 'account_id': 5933685} 
+2021-06-20 11:54:34.813867: 
+Successfully created item: {'data': {'create_item': {'id': '1406601840'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056717986'}}, 'account_id': 5933685} 
+Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to update 1056717986: {'data': {'add_file_to_update': {'id': '244237732'}}, 'account_id': 5933685} 
+Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to item 1406601840 column : {'data': {'add_file_to_column': {'id': '244237736'}}, 'account_id': 5933685} 
+2021-06-20 11:59:27.915370: 
+Successfully created item: {'data': {'create_item': {'id': '1406604890'}}, 'account_id': 5933685} 
+Successfully created update: {'data': {'create_update': {'id': '1056719141'}}, 'account_id': 5933685} 
+Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to update 1056719141: {'data': {'add_file_to_update': {'id': '244238089'}}, 'account_id': 5933685} 
+Succesfully added /Users/chelsea/workdir/git-box/db-ops/slack-monday/image.png to item 1406604890 column : {'data': {'add_file_to_column': {'id': '244238093'}}, 'account_id': 5933685} 
+2021-06-20 12:06:49.574520: 
+2021-06-20 12:08:22.179899: 
+2021-06-20 12:12:33.427285: 
