@@ -23,7 +23,7 @@ output.write(str(dt.now())+': \n')
 @app.event(
     event={"type": "message", "subtype": "file_share"}
 )
-def get_image(ack, client, body):
+def handle_file_share(ack, client, body):
     ack()
 
     try:
@@ -171,7 +171,7 @@ def file_bug_with_image(ack, client, body):
     file_URL = body["actions"][0]["value"]
     trigger_id = body["trigger_id"]
 
-    open_modal(ack=ack,trigger_id=trigger_id, client=client, file_URL=file_URL)
+    _open_modal(ack=ack,trigger_id=trigger_id, client=client, file_URL=file_URL)
 
     # Delete message
     client.chat_delete(
@@ -197,9 +197,9 @@ def file_bug(ack, shortcut, body, client):
     except KeyError:
         pass
 
-    open_modal(ack, trigger_id, client, file_URL=file_URL)
+    _open_modal(ack, trigger_id, client, file_URL=file_URL)
 
-def open_modal(ack, trigger_id, client, **kwargs):
+def _open_modal(ack, trigger_id, client, **kwargs):
     ack()
 
     file_URL = kwargs.get('file_URL', '')
@@ -469,7 +469,7 @@ def open_modal(ack, trigger_id, client, **kwargs):
             trigger_id=trigger_id,
             # View payload for a modal
             view=bug_file)
-        output.write(str(api_response.json()))
+        output.write(str(api_response))
 
     except SlackApiError as e:
         output.write("Error creating conversation: {}".format(e))
