@@ -2,6 +2,7 @@ import os
 # import json
 import re
 import pandas as pd
+from datetime import datetime as dt
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -13,6 +14,10 @@ from helpers.bug import Bug
 
 # slack stuff
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
+
+# print > output.txt
+output = open('data/output.txt', 'a')
+output.write(str(dt.now())+': \n')
 
 # user uploads file to channel
 @app.event(
@@ -36,6 +41,8 @@ def get_image(ack, client, body):
         for index in last_5.index:
             description = str(last_5['description'][index])
             item_id = str(last_5['monday_item_id'][index])
+            if len(description) > 75:
+                description = description[:75]
             options.append(
                             {
                             "text": {
@@ -105,7 +112,7 @@ def get_image(ack, client, body):
             thread_ts=message_ts
         )
     except KeyError as e:
-        print("No file uploaded: {}".format(e))
+        output.write("No file uploaded: {}".format(e))
 
 # user selects a monday item from dropdown
 @app.action("item_select")
@@ -115,6 +122,7 @@ def upload_image(ack, client, body):
     # grab info
     item_id = body["actions"][0]["selected_option"]["value"]
     text = body["message"]["blocks"][0]["text"]["text"]
+    
     # grab image URL from text
     try:
         url = re.search('<(.*)\|', text).group(1)
@@ -140,7 +148,7 @@ def add_image_to_monday(url, item_id, **kwargs):
         try:
             update_id = str(util.get_from_history('monday_update_id', int(item_id)))
         except KeyError as e:
-            print("Row in history.csv not found: {}".format(e))
+            output.write("Row in history.csv not found: {}".format(e))
 
     # get file
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -163,7 +171,7 @@ def file_bug_with_image(ack, client, body):
     file_URL = body["actions"][0]["value"]
     trigger_id = body["trigger_id"]
 
-    file_bug(trigger_id, client, file_URL=file_URL)
+    open_modal(ack=ack,trigger_id=trigger_id, client=client, file_URL=file_URL)
 
     # Delete message
     client.chat_delete(
@@ -173,33 +181,35 @@ def file_bug_with_image(ack, client, body):
 
 # user uses "file_bug" shortcut
 @app.shortcut("file_bug")
-def open_modal(ack, shortcut, body, client):
+def file_bug(ack, shortcut, body, client):
     '''
     The open_modal shortcut listens to a shortcut with the callback_id "file_bug"
     '''
     ack()
 
     trigger_id = shortcut["trigger_id"]
-    file_URL = None
+    file_URL = ''
 
     try: 
         ## future feature, extract text from message and auto-fill bug file
         # text = body["message"]["text"]
         file_URL = body["message"]["files"][0]["url_private"]
-    except KeyError as e:
-        print("Error accessing file from shortcut: {}".format(e))
+    except KeyError:
+        pass
 
-    file_bug(trigger_id, client, file_URL=file_URL)
+    open_modal(ack, trigger_id, client, file_URL=file_URL)
 
-def file_bug(trigger_id, client, **kwargs):
-    file_URL = kwargs.get('file_URL', None)
+def open_modal(ack, trigger_id, client, **kwargs):
+    ack()
+
+    file_URL = kwargs.get('file_URL', '')
 
     # with open('helpers/bug-file.json') as file:
     #     bug_file = json.load(file)
 
     bug_file = {
                     "type": "modal",
-                    "callback_id": "view-id",
+                    "callback_id": "bug_file",
                     "private_metadata": file_URL,
                     "title": {
                         "type": "plain_text",
@@ -455,16 +465,17 @@ def file_bug(trigger_id, client, **kwargs):
 
     try:
         # Call the views_open method using the built-in WebClient
-        client.views_open(
+        api_response = client.views_open(
             trigger_id=trigger_id,
             # View payload for a modal
             view=bug_file)
-        
+        output.write(str(api_response.json()))
+
     except SlackApiError as e:
-        print("Error creating conversation: {}".format(e))
+        output.write("Error creating conversation: {}".format(e))
 
 # open user submission
-@app.view("view-id")
+@app.view("bug_file")
 def view_submission(ack, client, body):
     '''
     Open view of modal of callback_id "view-id"
@@ -473,7 +484,9 @@ def view_submission(ack, client, body):
 
     bug = Bug()
 
-    if body["view"]["private_metadata"] != '':
+    file_upload = False
+
+    if body["view"]["private_metadata"] != '': 
         file_upload = True
 
     try:
@@ -497,9 +510,9 @@ def view_submission(ack, client, body):
         bug.expected = util.get_value('expected-behavior', 'expected-behavior-action', blocks)
         bug.config = util.get_value('config', 'config-action', blocks)
     except (IndexError, KeyError, TypeError) as e:
-        print("Error, data has unexpected inner structure: {}".format(e))
+        output.write("Error, data has unexpected inner structure: {}".format(e))
     except SlackApiError as e:
-        print("Error retrieving view: {}".format(e))
+        output.write("Error retrieving view: {}".format(e))
 
     # create monday item + update
     monday.create_item(bug)
@@ -589,9 +602,9 @@ def _send_summary(bug, client):
             blocks = blocks
         )
     except (IndexError, KeyError, TypeError) as e:
-        print("Error sending channel message, data structures don't match: {}".format(e))
+        output.write("Error sending channel message, data structures don't match: {}".format(e))
     except SlackApiError as e:
-        print("Error sending channel message, some slack issue: {}".format(e))
+        output.write("Error sending channel message, some slack issue: {}".format(e))
 
 @app.event("message")
 def ignore_message():

@@ -2,14 +2,15 @@ import requests
 import os
 import json
 import mimetypes
-from datetime import datetime as dt
 
+# monday variables
 apiUrl = "https://api.monday.com/v2"
 api_key = os.environ.get("MONDAY_API_KEY")
 headers = {"Authorization" : api_key}
 board_id = os.environ.get("BOARD_ID")
+
+# print > output.txt
 output = open('data/output.txt', 'a')
-output.write(str(dt.now())+': \n')
 
 def _get_priority(imp, vis):
     '''
@@ -52,7 +53,7 @@ def create_item(bug):
         bug.monday_item_id = r_json["data"]["create_item"]["id"] # save item id
 
     except (IndexError, KeyError, TypeError) as e:
-        print("Error creating monday item {0}".format(e))
+        output.write("Error creating monday item {0}".format(e))
     
     # write to output file
     output.write('Successfully created item: ')
@@ -83,7 +84,7 @@ def create_update(bug):
         r_json = r.json()
 
     except (IndexError, KeyError, TypeError) as e:
-        print("Error creating monday update {0}".format(e))
+        output.write("Error creating monday update {0}".format(e))
 
     try:
         # save bug attribtues
@@ -91,7 +92,7 @@ def create_update(bug):
         bug.monday_item_url = "https://databento.monday.com/boards/"+board_id+"/pulses/"+bug.monday_item_id # save update url
         bug.monday_update_url = bug.monday_item_url+"/posts/"+bug.monday_update_id
     except (IndexError, KeyError, TypeError) as e:
-        print("Error accessing response_json and saving bug attributes after creating monday update {0}".format(e))
+        output.write("Error accessing response_json and saving bug attributes after creating monday update {0}".format(e))
     
     # write to output file
     output.write("Successfully created update: ")
@@ -128,7 +129,7 @@ def add_file_to_update(update_id, file):
         r_json = r.json()
 
     except (IndexError, KeyError, TypeError) as e:
-        print("Error uploading file to monday update {0}".format(e))
+        output.write("Error uploading file to monday update {0}".format(e))
 
     # write to output file
     output.write('Succesfully added '+file+' to update '+update_id+': ')
@@ -165,7 +166,7 @@ def add_file_to_column(item_id, file):
         r = requests.post(url=apiUrl, files=files, headers=headers)
         r_json = r.json()
     except (IndexError, KeyError, TypeError) as e:
-        print("Error adding file to column on monday {0}".format(e))
+        output.write("Error adding file to column on monday {0}".format(e))
     
     # write to output file
     output.write('Succesfully added '+file+' to item '+item_id+' column : ')
