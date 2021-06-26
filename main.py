@@ -149,6 +149,12 @@ def add_image_to_monday(url, item_id, **kwargs):
             update_id = str(util.get_from_history('monday_update_id', int(item_id)))
         except KeyError as e:
             output.write("Row in history.csv not found: {}".format(e))
+        except ValueError as e:
+            update_id = str(util.get_from_history('monday_update_id', int(float(item_id))))
+
+    # catch string ending in .0 issue
+    update_id = int((float(update_id)))
+    item_id = int((float(item_id)))
 
     # get file
     dir_path = os.path.dirname(os.path.realpath(__file__))

@@ -34,3 +34,72 @@ No left-right motion",Wiggle app left/right on mobile.,N/A,1417066367,1061271729
 2021-06-23 15:30:17.641137,chelsea,chelsea,UMDU6FCDT,Platform,AC Search results contains some data that is unmatched.,2,4,N/A,Search 'ES' on landing page,N/A,1418098443,1061683444,https://databento.monday.com/boards/1029994357/pulses/1418098443,https://databento.monday.com/boards/1029994357/pulses/1418098443/posts/1061683444
 2021-06-23 15:34:09.988266,chelsea,chelsea,UMDU6FCDT,Platform,"XNAS.ITCH has no metadata, so can't filter it.",2,4,N/A,Filters don't work on Nasdaq dataset,N/A,1418113324,1061688571,https://databento.monday.com/boards/1029994357/pulses/1418113324,https://databento.monday.com/boards/1029994357/pulses/1418113324/posts/1061688571
 2021-06-23 16:17:39.094943,ll_slack,ll_slack,UMDEAFX52,Platform,Search form resizes while typing,1,2,Should not wobble.,"Type a search string like ""GME"", then delete it completely. See the rightmost of the search form where it meets the search button.","Mac OS, 2560x1440, Chrome",1418283254,1061754287,https://databento.monday.com/boards/1029994357/pulses/1418283254,https://databento.monday.com/boards/1029994357/pulses/1418283254/posts/1061754287
+2021-06-23 17:04:56.214875,ll_slack,ll_slack,UMDEAFX52,Platform,"When scrolling past bottom of the page, extra whitespace shows up at bottom",2,2,Should not overscroll.,"Log in, scroll to the bottom and keep scrolling.","Mac OS, Chrome, 2560x1440",1418435035,1061815002,https://databento.monday.com/boards/1029994357/pulses/1418435035,https://databento.monday.com/boards/1029994357/pulses/1418435035/posts/1061815002
+2021-06-23 17:12:36.885801,ll_slack,ll_slack,UMDEAFX52,Platform,"Request builder doesn't handle two datasets.
+1) NASDAQ dataset has no dataset name.
+2) When you add instruments from two datasets (CME, NASDAQ), the RB simply overrides the active dataset and does not notify you of the conflict.",2,4,"1) NASDAQ dataset name should be present.
+2) If instrument from another dataset is added, notification should given and you should be prompted to decide if you want to clear your current selections.",Search ES. Add ES. Search GME. Add GME.,"Mac OS, 2560x1440, Chrome",1418462935,1061822776,https://databento.monday.com/boards/1029994357/pulses/1418462935,https://databento.monday.com/boards/1029994357/pulses/1418462935/posts/1061822776
+2021-06-23 17:40:57.643792,chelsea,chelsea,UMDU6FCDT,Platform,"""Since XXXX-XX-XX"" date is incorrect for CME + Nasdaq
+
+""Available history"" filters incorrect for CME + Nasdaq
+
+https://databento.slack.com/archives/CNHCL6Z8S/p1624431172449000",2,4,N/A,"Data available to neko right now
+GLBX.MDP3: 2020-12-27 to 2021-01-01
+XNAS.ITCH: 2015-04-01 to 2015-04-20
+
+Search `ES` and try 2020-12-27 to 2021-01-01 for Available history filter. 
+
+Search `AAPL` and try 2015-04-01 to 2015-04-20 for Available history filter. Notice that changing the dates to 2015-03-31 to 2015-04-21 still produces Nasdaq data results.",N/A,1418521674,1061851093,https://databento.monday.com/boards/1029994357/pulses/1418521674,https://databento.monday.com/boards/1029994357/pulses/1418521674/posts/1061851093
+2021-06-24 15:29:44.489745,chelsea,chelsea,UMDU6FCDT,Platform,"I think the download center interaction looks awkward - there's a ""clear selections"" link even after your request has been submitted, probably makes more sense to remove that, show the Done button as the loading is still running:",4,2,N/A,Download center downloading state,N/A,1421908716,1063210501,https://databento.monday.com/boards/1029994357/pulses/1421908716,https://databento.monday.com/boards/1029994357/pulses/1421908716/posts/1063210501
+2021-06-24 15:39:46.500562,chelsea,chelsea,UMDU6FCDT,Platform,"Code runner ""reset"" button should return code runner to initial state. It should not ""run"" the code again.",2,2,N/A,"Run, then reset code runner on landing page.",N/A,1421937595,1063223576,https://databento.monday.com/boards/1029994357/pulses/1421937595,https://databento.monday.com/boards/1029994357/pulses/1421937595/posts/1063223576
+2021-06-24 15:40:37.901191,chelsea,chelsea,UMDU6FCDT,Platform,"UTC timezone dropdown (X) out issue.
+
+Remove (X) out, if the entry is invalid, return to last valid state. The input should not be empty.",2,2,N/A,"Remove (X) out, if the entry is invalid, return to last valid state. The input should not be empty.",N/A,1421946086,1063224634,https://databento.monday.com/boards/1029994357/pulses/1421946086,https://databento.monday.com/boards/1029994357/pulses/1421946086/posts/1063224634
+2021-06-24 16:06:40.746247,chelsea,chelsea,UMDU6FCDT,Platform,"Here's a set of writing changes to make:
+1. Join waitlist button (top right nav AND landing page call-to-action container) -> Get Early Access
+2. For the waitlist signup, (i) remove left column content (text above graphic), (ii) shorten introduction header to Early Access Program, (iii) Join our waitlist for early access and receive a $200 credit towards historical data.
+3. For hero container, let's change it to Try Databento | Customize and get your historical and live data
+4. For the search results table, (i) let's change the ""DATASETS"" column to ""DATASET / DATE ADDED"". Plural is incorrect. (ii) We can also remove the ""Since"" word that is repetitive now that we have ""Date added"" in the column header.",1,5,N/A,See above.,N/A,,,,
+2021-06-24 16:08:06.368983,chelsea,chelsea,UMDU6FCDT,Platform,Text changes,1,5,"Here's a set of writing changes to make:
+1. Join waitlist button (top right nav AND landing page call-to-action container) -> Get Early Access
+2. For the waitlist signup, (i) remove left column content (text above graphic), (ii) shorten introduction header to Early Access Program, (iii) Join our waitlist for early access and receive a $200 credit towards historical data.
+3. For hero container, let's change it to Try Databento | Customize and get your historical and live data
+4. For the search results table, (i) let's change the ""DATASETS"" column to ""DATASET / DATE ADDED"". Plural is incorrect. (ii) We can also remove the ""Since"" word that is repetitive now that we have ""Date added"" in the column header.",See locations below.,N/A,1422049747,1063262801,https://databento.monday.com/boards/1029994357/pulses/1422049747,https://databento.monday.com/boards/1029994357/pulses/1422049747/posts/1063262801
+2021-06-24 16:47:12.681588,ll_slack,ll_slack,UMDEAFX52,Platform,"In search/ac results table, we are rendering a double space between the publisher name and dataset name, e.g. ""CME  Globex MDP 3.0"".",1,1,should be single space instead of double,N/A,N/A,1422187581,1063308093,https://databento.monday.com/boards/1029994357/pulses/1422187581,https://databento.monday.com/boards/1029994357/pulses/1422187581/posts/1063308093
+2021-06-24 16:49:41.490622,siqichen,siqichen,U014B3W8BUJ,Platform,"pricing page ""one time cost = Unit price x data size"" should be ""One time cost = Unit price x data size""",2,1,N/A,pricing - historical data,N/A,1422198582,1063310899,https://databento.monday.com/boards/1029994357/pulses/1422198582,https://databento.monday.com/boards/1029994357/pulses/1422198582/posts/1063310899
+2021-06-24 17:15:21.601857,chelsea,chelsea,UMDU6FCDT,Platform,Add Nasdaq logo to all instances of XNAS.ITCH,3,1,N/A,Add any instrument from Nasdaq dataset to request builder?,N/A,1422287442,1063340222,https://databento.monday.com/boards/1029994357/pulses/1422287442,https://databento.monday.com/boards/1029994357/pulses/1422287442/posts/1063340222
+2021-06-25 14:37:40.545231,chelsea,chelsea,UMDU6FCDT,Platform,"Update text on format tooltip
+
+Old:
+Reference     description
+Status           description
+
+New:
+Definition     Security definitions, reference data, symbol list
+Status            Security status, trading status, market status",3,3,N/A,Hover on format tooltip.,N/A,1425060342,1064506895,https://databento.monday.com/boards/1029994357/pulses/1425060342,https://databento.monday.com/boards/1029994357/pulses/1425060342/posts/1064506895
+2021-06-25 15:21:28.535097,chelsea,chelsea,UMDU6FCDT,Platform,Skeleton loading state does not wait for graphic to load/size up before 'unveiling' the page.,1,1,The skeleton state should be shown until the graphic on multidocs home page is fully loaded and sized up.,"Clear caches, use location far from Bos on a VPN, load multidocs home page.",N/A,1425242803,1064557031,https://databento.monday.com/boards/1029994357/pulses/1425242803,https://databento.monday.com/boards/1029994357/pulses/1425242803/posts/1064557031
+2021-06-25 15:31:26.579915,chelsea,chelsea,UMDU6FCDT,Both,FOUT issue on error pages. Low prio.,5,1,N/A,CC: @luca,N/A,1425264252,1064567879,https://databento.monday.com/boards/1029994357/pulses/1425264252,https://databento.monday.com/boards/1029994357/pulses/1425264252/posts/1064567879
+2021-06-25 18:40:03.089643,siqichen,siqichen,U014B3W8BUJ,Platform,"style issue of buttons in code runner:
+- icons not vertically aligned
+- arrow icon color is wrong
+- the shadow of two buttons should be consistant",1,1,N/A,landing page,N/A,1425674244,1064725943,https://databento.monday.com/boards/1029994357/pulses/1425674244,https://databento.monday.com/boards/1029994357/pulses/1425674244/posts/1064725943
+2021-06-26 16:07:20.616931,chelsea,chelsea,UMDU6FCDT,Platform,"Pixelated favicon. 
+Interestingly even the old favicon appears to be not pixelated in comparison. also interestingly, the multidocs site has a much more pixelated favicon than the platform site O_O",1,2,See in comparison to Quandl,Open tab.,N/A,1426400298,1064971242,https://databento.monday.com/boards/1029994357/pulses/1426400298,https://databento.monday.com/boards/1029994357/pulses/1426400298/posts/1064971242
+2021-06-26 16:09:28.213995,chelsea,chelsea,UMDU6FCDT,Platform,"When I try to start a similar request in the download center, I get this. I don’t think this is intentional, because I occasionally get the download request page with the appropriate instrument request",3,5,N/A,click on row w expired status.,N/A,1426405196,1064971548,https://databento.monday.com/boards/1029994357/pulses/1426405196,https://databento.monday.com/boards/1029994357/pulses/1426405196/posts/1064971548
+2021-06-26 16:15:20.641360,chelsea,chelsea,UMDU6FCDT,Platform,"Missing ""Details"" column data",4,5,N/A,"Just curious as to whether the data is being fed in for the “Details” column. From what I see we have the data on when it expires and when its requested so I was wondering if the time range, time zone and the rest might be left out because of a bug. If it’s due to lack of data then this is not a bug.",N/A,1426412764,1064972536,https://databento.monday.com/boards/1029994357/pulses/1426412764,https://databento.monday.com/boards/1029994357/pulses/1426412764/posts/1064972536
+2021-06-26 16:16:25.311893,chelsea,chelsea,UMDU6FCDT,Platform,"When I am logged in and click on the system status page, I am still shown the “Get Early Access” button/dropdown. Might be a better idea to remove it to avoid confusing the user when they are logged in?",3,2,N/A,Go to system status page while logged in.,N/A,1426413093,1064972657,https://databento.monday.com/boards/1029994357/pulses/1426413093,https://databento.monday.com/boards/1029994357/pulses/1426413093/posts/1064972657
+2021-06-26 16:21:23.915086,chelsea,chelsea,UMDU6FCDT,Platform,Improve copy in Set team budget modal,3,2,"I think the language used in this could be improved.
+Instead of
+“How does the budget work?
+You will get notification when exceeding 90% of budget.
+The service will terminate reach 100% of budget.”
+->
+“How do team budgets work?
+You will be notified when you exceed 90% of your allocated team budget.
+Our services will automatically terminate once you use up 100% of the budget.”",set team budget link on billing page,N/A,1426415263,1064973314,https://databento.monday.com/boards/1029994357/pulses/1426415263,https://databento.monday.com/boards/1029994357/pulses/1426415263/posts/1064973314
+2021-06-26 16:21:54.827220,chelsea,chelsea,UMDU6FCDT,Platform,'Cpp' should be 'C++',5,1,N/A,Select integration dropdown in code runner,N/A,1426415418,1064973373,https://databento.monday.com/boards/1029994357/pulses/1426415418,https://databento.monday.com/boards/1029994357/pulses/1426415418/posts/1064973373
+2021-06-26 16:23:04.732317,chelsea,chelsea,UMDU6FCDT,Platform,Improve 503 error copy,5,1,"Can't reach our servers?
+503 Gateway Timeout
+An error has occurred and we’re working to fix the problem. We’ll be up and running again shortly. Please try to refresh this page later.
+If you need immediate assistance from our support team, please contact us.",503 error page,N/A,1426415723,1064973497,https://databento.monday.com/boards/1029994357/pulses/1426415723,https://databento.monday.com/boards/1029994357/pulses/1426415723/posts/1064973497
+2021-06-26 16:31:09.799718,chelsea,chelsea,UMDU6FCDT,Platform,"""Paid due"" -> ""Payment due""",3,2,N/A,Go to billing page,N/A,1426419341,1064974534,https://databento.monday.com/boards/1029994357/pulses/1426419341,https://databento.monday.com/boards/1029994357/pulses/1426419341/posts/1064974534

@@ -132,7 +132,7 @@ def add_file_to_update(update_id, file):
         output.write("Error uploading file to monday update {0}".format(e))
 
     # write to output file
-    output.write('Succesfully added '+file+' to update '+update_id+': ')
+    output.write('Succesfully added '+file+' to update '+str(update_id)+': ')
     output.write(str(r_json)+' \n')
 
     
@@ -169,6 +169,6 @@ def add_file_to_column(item_id, file):
         output.write("Error adding file to column on monday {0}".format(e))
     
     # write to output file
-    output.write('Succesfully added '+file+' to item '+item_id+' column : ')
+    output.write('Succesfully added '+file+' to item '+str(item_id)+' column : ')
     output.write(str(r_json)+' \n')
 
