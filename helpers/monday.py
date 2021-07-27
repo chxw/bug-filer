@@ -9,7 +9,7 @@ api_key = os.environ.get("MONDAY_API_KEY")
 headers = {"Authorization" : api_key}
 board_id = os.environ.get("BOARD_ID")
 
-# print > output.txt
+# Output to file
 output = open('data/output.txt', 'a')
 
 def _get_priority(imp, vis):
@@ -37,7 +37,7 @@ def create_item(bug):
     '''
     mutate_query = 'mutation ($myItemName: String!, $columnVals: JSON!) { create_item (board_id:'+board_id+', item_name:$myItemName, column_values:$columnVals) { id } }'
     vars = {
-        'myItemName' : bug.description,
+        'myItemName' : bug.description[:255], # truncate
         'columnVals' : json.dumps({
             'status_11' : {'label' : bug.site},
             'numbers' : bug.visibility,
