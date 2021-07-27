@@ -18,6 +18,51 @@ output = open('data/output.txt', 'a')
 output.write(str(dt.now())+': \n')
 
 
+def _add_image_to_monday(url, item_id, **kwargs):
+    """
+    Upload image (url) to monday item's update (update_id) and in "Files" column (item_id).
+
+    Keyword arguments:
+    url -- image_url (i.e. https://...png).
+    item_id -- id assigned to items by monday.com.
+    update_id -- id assigned to updates by monday.com.
+
+    Monday API supports PNG, JPEG, Word, PDF, Excel, GIF, MP4, SVG, TXT, AI formats.
+    """
+    # Download private slack file
+    filename = util.download_file_from_URL(url)
+
+    # get update_id
+    if 'update_id' in kwargs:
+        update_id = kwargs.get('update_id')
+    else:
+        try:
+            update_id = str(util.get_from_history(
+                'monday_update_id', int(item_id)))
+        except KeyError as e:
+            output.write("Row in history.csv not found: {}".format(e))
+        except ValueError as e:
+            update_id = str(util.get_from_history(
+                'monday_update_id', int(float(item_id))))
+
+    # catch string ending in .0
+    update_id = int((float(update_id)))
+    item_id = int((float(item_id)))
+
+    # get file
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    f = dir_path+'/'+filename
+
+    # Upload file to update on monday.com
+    monday.add_file_to_update(update_id=update_id, file=f)
+
+    # Upload file to column on monday.com
+    monday.add_file_to_column(item_id=item_id, file=f)
+
+    # Delete locally saved file
+    os.remove(f)
+
+
 # File uploaded to channel (SLACK_CHANNEL_ID in .env)
 @app.event(
     event={"type": "message", "subtype": "file_share"}
@@ -27,15 +72,16 @@ def handle_file_share(ack, client, body):
 
     try:
 
-        # collect image 
+        # collect image
         file_urls = []
         for file in body["event"]["files"]:
             file_urls.append(file["url_private"])
         # collect ts for file upload message
         message_ts = body["event"]["event_ts"]
 
-        # get last 5 submitted bug reports 
-        df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False)
+        # get last 5 submitted bug reports
+        df = pd.read_csv('data/history.csv', sep=',',
+                         header=0, error_bad_lines=False)
         last_5 = df.tail(5)
 
         # create 'options' list of last 5 reports for dropdown menu
@@ -44,7 +90,8 @@ def handle_file_share(ack, client, body):
             description = str(last_5['description'][index])
             item_id = str(last_5['monday_item_id'][index])
             # truncate
-            description = description[:20]+'..' if len(description) > 20 else description
+            description = description[:20] + \
+                '..' if len(description) > 20 else description
             options.append(
                 {
                     "text": {
@@ -112,7 +159,7 @@ def handle_file_share(ack, client, body):
 
         # Reply in thread to file upload message
         client.chat_postMessage(
-            channel=os.environ.get("SLACK_TEST_CHANNEL_ID"),
+            channel=os.environ.get("SLACK_CHANNEL_ID"),
             text="You uploaded a file, which monday item do you want to attach this to?",
             blocks=blocks,
             thread_ts=message_ts
@@ -121,71 +168,27 @@ def handle_file_share(ack, client, body):
         output.write("No file uploaded: {}".format(e))
 
 
- # User selects a monday item from dropdown
 @app.action("item_select")
-def upload_image(ack, client, body):
+def image_select(ack, client, body):
+    """
+    Get which dropdown item (representation of monday) user selected and upload file to the corresponding monday item. 
+    """
     ack()
 
     # grab info
     item_id = body["actions"][0]["selected_option"]["value"]
-    text = body["message"]["blocks"][0]["text"]["text"]
     file_urls = body["message"]["blocks"][1]["accessory"]["value"]
 
     file_urls = file_urls.split()
 
     for url in file_urls:
-        add_image_to_monday(url, item_id)
+        _add_image_to_monday(url, item_id)
 
     # Delete message
     client.chat_delete(
         channel=body["container"]["channel_id"],
         ts=body["container"]["message_ts"]
     )
-
-
-def add_image_to_monday(url, item_id, **kwargs):
-    """
-    Upload image (url) to monday item's update (update_id) and in "Files" column (item_id).
-
-    Keyword arguments:
-    url -- image_url (i.e. https://...png).
-    item_id -- id assigned to items by monday.com.
-    update_id -- id assigned to updates by monday.com.
-    
-    Monday API supports PNG, JPEG, Word, PDF, Excel, GIF, MP4, SVG, TXT, AI formats.
-    """
-    # Download private slack file
-    filename = util.download_file_from_URL(url)
-
-    # get update_id
-    if 'update_id' in kwargs:
-        update_id = kwargs.get('update_id')
-    else:
-        try:
-            update_id = str(util.get_from_history(
-                'monday_update_id', int(item_id)))
-        except KeyError as e:
-            output.write("Row in history.csv not found: {}".format(e))
-        except ValueError as e:
-            update_id = str(util.get_from_history(
-                'monday_update_id', int(float(item_id))))
-
-    # catch string ending in .0
-    update_id = int((float(update_id)))
-    item_id = int((float(item_id)))
-
-    # get file
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    f = dir_path+'/'+filename
-
-    # Upload file to update on monday.com
-    monday.add_file_to_update(update_id=update_id, file=f)
-
-    # Upload file to column on monday.com
-    monday.add_file_to_column(item_id=item_id, file=f)
-
-    # Delete locally saved file
-    os.remove(f)
 
 
 # user clicks "Create Item" in image attachment message
@@ -212,9 +215,9 @@ def file_bug_with_image(ack, client, body):
 # user clicks "Create Item" in global shortcut
 @app.shortcut("file_bug")
 def file_bug(ack, shortcut, body, client):
-    '''
+    """
     The open_modal shortcut listens to a shortcut with the callback_id "file_bug"
-    '''
+    """
     ack()
 
     trigger_id = shortcut["trigger_id"]
@@ -232,6 +235,10 @@ def file_bug(ack, shortcut, body, client):
 
 
 def _open_modal(ack, trigger_id, client, **kwargs):
+    """
+    Open Slack modal (form) for user to fill out bug report. Include urls of files in private_metadata if file_urls included in args. 
+    """
+
     ack()
 
     file_urls = kwargs.get('file_urls', [])
@@ -506,14 +513,12 @@ def _open_modal(ack, trigger_id, client, **kwargs):
     except SlackApiError as e:
         output.write("Error creating conversation: {}".format(e))
 
-# open user submission
-
 
 @app.view("bug_file")
 def view_submission(ack, client, body):
-    '''
-    Open view of modal of callback_id "view-id"
-    '''
+    """
+    Open user submission (view of modal of callback_id "view-id")
+    """
     ack()
 
     bug = Bug()
@@ -525,7 +530,7 @@ def view_submission(ack, client, body):
         file_upload = True
 
     try:
-        # if file upload, grab 
+        # if file upload, grab
         if file_upload:
             bug.file_urls = body["view"]["private_metadata"].split()
         # who submitted?
@@ -563,8 +568,8 @@ def view_submission(ack, client, body):
     # add file to monday
     if file_upload:
         for file_url in bug.file_urls:
-            add_image_to_monday(
-            url=file_url, item_id=bug.monday_item_id, update_id=bug.monday_update_id)
+            _add_image_to_monday(
+                url=file_url, item_id=bug.monday_item_id, update_id=bug.monday_update_id)
 
     # save submission
     util.save_to_history(bug)
@@ -572,10 +577,11 @@ def view_submission(ack, client, body):
     # send message to #dev-bugs
     _send_summary(bug, client)
 
-# Send summary of user submitted bug report to slack channel
-
 
 def _send_summary(bug, client):
+    """
+    Send summary of user submitted bug report to SLACK_CHANNEL_ID
+    """
     try:
         # backup text
         text = "*Bug File* submission from <@"+bug.user_id+"> \n"+"\n*Site*\n"+bug.site+"\n\n*Describe the bug*\n"+bug.description+"\n\n*Visibility*\n"+str(bug.visibility)+"\n\n*Impact*\n"+str(
@@ -644,7 +650,7 @@ def _send_summary(bug, client):
         }]
         # send summary message
         client.chat_postMessage(
-            channel=os.environ.get("SLACK_TEST_CHANNEL_ID"),
+            channel=os.environ.get("SLACK_CHANNEL_ID"),
             text=text,
             blocks=blocks
         )
@@ -666,4 +672,4 @@ def ignore_message():
 
 # Start your app
 if __name__ == "__main__":
-    SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start() 
+    SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
