@@ -63,11 +63,14 @@ def _add_image_to_monday(url, item_id, **kwargs):
     os.remove(f)
 
 
-# File uploaded to channel (SLACK_CHANNEL_ID in .env)
+# SHARE FILE: File uploaded to channel (SLACK_CHANNEL_ID in .env)
 @app.event(
     event={"type": "message", "subtype": "file_share"}
 )
 def handle_file_share(ack, client, body):
+    """
+    React to user's file share in SLACK_CHANNEL_ID. Grab all url_private items and use to upload to existing monday item or to upload with a new monday item.
+    """
     ack()
 
     try:
@@ -191,9 +194,12 @@ def image_select(ack, client, body):
     )
 
 
-# user clicks "Create Item" in image attachment message
+# MESSAGE SHORTCUT: user clicks "Create Item" in image attachment message
 @app.action("create_item")
 def file_bug_with_image(ack, client, body):
+    """
+    Create new monday item with uploaded images. 
+    """
     ack()
 
     file_urls = []
@@ -212,7 +218,7 @@ def file_bug_with_image(ack, client, body):
     )
 
 
-# user clicks "Create Item" in global shortcut
+# GLOBAL SHORTCUT: user clicks "Create Item" in global shortcut
 @app.shortcut("file_bug")
 def file_bug(ack, shortcut, body, client):
     """
@@ -514,6 +520,7 @@ def _open_modal(ack, trigger_id, client, **kwargs):
         output.write("Error creating conversation: {}".format(e))
 
 
+# When user saves Slack modal
 @app.view("bug_file")
 def view_submission(ack, client, body):
     """
@@ -580,7 +587,7 @@ def view_submission(ack, client, body):
 
 def _send_summary(bug, client):
     """
-    Send summary of user submitted bug report to SLACK_CHANNEL_ID
+    Send summary of user submitted bug report to SLACK_CHANNEL_ID.
     """
     try:
         # backup text
