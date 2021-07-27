@@ -1,6 +1,4 @@
 import os
-# import json
-import re
 import pandas as pd
 from datetime import datetime as dt
 
@@ -37,7 +35,7 @@ def handle_file_share(ack, client, body):
         message_ts = body["event"]["event_ts"]
 
         # get last 5 submitted bug reports 
-        df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False, quoting=3)
+        df = pd.read_csv('data/history.csv', sep=',',header=0, error_bad_lines=False)
         last_5 = df.tail(5)
 
         # create 'options' list of last 5 reports for dropdown menu
@@ -46,12 +44,12 @@ def handle_file_share(ack, client, body):
             description = str(last_5['description'][index])
             item_id = str(last_5['monday_item_id'][index])
             # truncate
-            description = description[:72]+'..' if len(description) > 75 else description
+            description = description[:20]+'..' if len(description) > 20 else description
             options.append(
                 {
                     "text": {
                         "type": "plain_text",
-                        "text": description
+                        "text": description.strip()
                     },
                     "value": item_id
                 })
@@ -106,7 +104,7 @@ def handle_file_share(ack, client, body):
                         "text": "Create Item",
                         "emoji": True
                     },
-                    "value": file_urls,
+                    "value": ' '.join(file_urls),
                     "action_id": "create_item"
                 }
             }
@@ -131,19 +129,12 @@ def upload_image(ack, client, body):
     # grab info
     item_id = body["actions"][0]["selected_option"]["value"]
     text = body["message"]["blocks"][0]["text"]["text"]
-    print('here', body)
+    file_urls = body["message"]["blocks"][1]["accessory"]["value"]
 
-    file_urls = []
-    for file in body["view"]["state"]["values"]:
-        print(file)
+    file_urls = file_urls.split()
 
-    # grab image from text
-    # try:
-    #     url = re.search('<(.*)\|', text).group(1)
-    # except AttributeError:
-    #     url = ''
-
-    # add_image_to_monday(url, item_id)
+    for url in file_urls:
+        add_image_to_monday(url, item_id)
 
     # Delete message
     client.chat_delete(
@@ -179,7 +170,7 @@ def add_image_to_monday(url, item_id, **kwargs):
             update_id = str(util.get_from_history(
                 'monday_update_id', int(float(item_id))))
 
-    # catch string ending in .0 issue
+    # catch string ending in .0
     update_id = int((float(update_id)))
     item_id = int((float(item_id)))
 
@@ -251,7 +242,7 @@ def _open_modal(ack, trigger_id, client, **kwargs):
     bug_file = {
         "type": "modal",
         "callback_id": "bug_file",
-        "private_metadata": file_urls,
+        "private_metadata": ' '.join(file_urls),
         "title": {
             "type": "plain_text",
             "text": "File a bug",
@@ -529,8 +520,6 @@ def view_submission(ack, client, body):
 
     file_upload = False
 
-    print('here', body["view"])
-
     # check if this is a file upload
     if body["view"]["private_metadata"] != '':
         file_upload = True
@@ -538,8 +527,7 @@ def view_submission(ack, client, body):
     try:
         # if file upload, grab 
         if file_upload:
-            bug.file_urls = body["view"]["private_metadata"]
-            print(bug.file_urls)
+            bug.file_urls = body["view"]["private_metadata"].split()
         # who submitted?
         bug.user = body["user"]["username"]
         bug.name = body["user"]["name"]
@@ -575,7 +563,6 @@ def view_submission(ack, client, body):
     # add file to monday
     if file_upload:
         for file_url in bug.file_urls:
-            print(file_url)
             add_image_to_monday(
             url=file_url, item_id=bug.monday_item_id, update_id=bug.monday_update_id)
 

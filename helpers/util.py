@@ -21,7 +21,9 @@ def save_to_history(bug):
     with open('data/history.csv', 'a', newline='') as file:
         history = csv.writer(file, delimiter=',')
         row = [dt.now(), bug.user, bug.name, bug.user_id, bug.site, bug.description, bug.visibility, bug.impact, bug.expected, bug.to_reproduce, bug.config, bug.monday_item_id, bug.monday_update_id, bug.monday_item_url, bug.monday_update_url]
-        print(row)
+        # get rid of newlines
+        for val in row:
+            val = str(val).strip()
         history.writerow(row)
         file.close()
     

@@ -1,183 +1,456 @@
-timestamp,username,real_name,user_id,site,description,visibility,impact, to_reproduce,expected_behavior,configuration,monday_item_id,monday_update_id,monday_item_url, monday_update_url
-2021-06-17 17:58:04.344044,siqichen,siqichen,U014B3W8BUJ,Platform,selection chips of format in field section sometimes lose border line,2,1,N/A,instrument detail page - scroll down to fields,N/A,1401562947,1055022267,https://databento.monday.com/boards/1029994357/pulses/1401562947,https://databento.monday.com/boards/1029994357/pulses/1401562947/posts/1055022267
-2021-06-20 12:41:15.708657,chelsea,chelsea,UMDU6FCDT,Platform,"On mobile when I am on the landing page, it zooms in when I click on the search field, causing the page to be unwieldy",2,3,N/A,"Mobile, landing page, click search field",mobile,1406649953,1056728158,https://databento.monday.com/boards/1029994357/pulses/1406649953,https://databento.monday.com/boards/1029994357/pulses/1406649953/posts/1056728158
-2021-06-20 12:44:55.977673,chelsea,chelsea,UMDU6FCDT,Platform,"""About databento"" should be ""About Databento""",3,1,N/A,Open menu on mobile device.,Mobile iOS,1406651455,1056728759,https://databento.monday.com/boards/1029994357/pulses/1406651455,https://databento.monday.com/boards/1029994357/pulses/1406651455/posts/1056728759
-2021-06-20 12:46:24.041292,chelsea,chelsea,UMDU6FCDT,Platform,"Here under the Highly Flexible I think there should be a comma between minute, daily? with a period at the end.",2,1,N/A,Landing page,N/A,1406652432,1056728972,https://databento.monday.com/boards/1029994357/pulses/1406652432,https://databento.monday.com/boards/1029994357/pulses/1406652432/posts/1056728972
-2021-06-20 12:49:04.296369,chelsea,chelsea,UMDU6FCDT,Platform,On mobile (FireFox) the logo is cropped slightly at the bottom,4,1,N/A,"Mobile, Firefox",Mobile,1406654067,1056729382,https://databento.monday.com/boards/1029994357/pulses/1406654067,https://databento.monday.com/boards/1029994357/pulses/1406654067/posts/1056729382
-2021-06-20 12:49:40.359978,chelsea,chelsea,UMDU6FCDT,Platform,Access Keys: Small point on language consistency “has been rotated” vs “is deleted”. Probably more correct to standardize to “has been deleted”?,1,1,"Change ""has been rotated"" text to ""has been deleted""",access keys page.,N/A,1406654303,1056729476,https://databento.monday.com/boards/1029994357/pulses/1406654303,https://databento.monday.com/boards/1029994357/pulses/1406654303/posts/1056729476
-2021-06-20 14:04:46.195514,chelsea,chelsea,UMDU6FCDT,Multidocs,I'm seeing the flash of unstyled text issue again on the doc site :disappointed: This may be due to the recent changes by @zengruilin @yifeng to speed up the loading times of the sites?,1,1,N/A,?,N/A,1406700334,1056741037,https://databento.monday.com/boards/1029994357/pulses/1406700334,https://databento.monday.com/boards/1029994357/pulses/1406700334/posts/1056741037
-2021-06-20 14:06:42.212548,chelsea,chelsea,UMDU6FCDT,Platform,"also does anyone notice that the landing page/platform feels really laggy to scroll down on? compared to say the doc site, the difference is light and day on my machine",2,3,N/A,?,N/A,1406702330,1056741284,https://databento.monday.com/boards/1029994357/pulses/1406702330,https://databento.monday.com/boards/1029994357/pulses/1406702330/posts/1056741284
-2021-06-20 14:45:42.805051,siqichen,siqichen,U014B3W8BUJ,Platform,support icon (menu - docs) color should be purple500 when hovering,2,1,N/A,topbar - docs - support,N/A,1406727923,1056747196,https://databento.monday.com/boards/1029994357/pulses/1406727923,https://databento.monday.com/boards/1029994357/pulses/1406727923/posts/10567471962021-06-21 15:05:07.164628,chelsea,chelsea,UMDU6FCDT,Platform,"I think the least invasive change is to simply remove the typo: ""technical and issues"" should be ""technical issues"".
-""Get help with integration, technical issues, feature requests and bug reports.""",5,1,N/A,contact us page,N/A,1410149392,1057991273,https://databento.monday.com/boards/1029994357/pulses/1410149392,https://databento.monday.com/boards/1029994357/pulses/1410149392/posts/1057991273
-2021-06-21 15:06:38.658222,chelsea,chelsea,UMDU6FCDT,Platform,Test out turning png graphics to svgz,2,4,N/A,Landing page,N/A,1410158231,1057992979,https://databento.monday.com/boards/1029994357/pulses/1410158231,https://databento.monday.com/boards/1029994357/pulses/1410158231/posts/1057992979
-2021-06-21 15:10:31.444389,chelsea,chelsea,UMDU6FCDT,Platform,"Fix opacity/color of UTC timezone chip, for the demo.",3,2,N/A,Found on Dataset and Instrument detail pages.,N/A,1410178549,1057998008,https://databento.monday.com/boards/1029994357/pulses/1410178549,https://databento.monday.com/boards/1029994357/pulses/1410178549/posts/1057998008
-2021-06-21 16:06:51.676594,chelsea,chelsea,UMDU6FCDT,Multidocs,"""Response"" -> ""Returns'. 
-
-Table styling should match the ""Returns"" table in historical=python Metadata section: https://docs0.databento.com/reference-historical/metadata?historical=python&live=python.",2,2,N/A,"historical=HTTP 
-Response -> Returns
-Table formatting should match Python Returns.",N/A,1410393718,1058075446,https://databento.monday.com/boards/1029994357/pulses/1410393718,https://databento.monday.com/boards/1029994357/pulses/1410393718/posts/1058075446
-2021-06-21 16:10:12.996005,ll_slack,ll_slack,UMDEAFX52,Platform,Radius of slack icon in footer is too large,1,2,Should be smaller and similar in radius to github icon,N/A,N/A,1410410501,1058080090,https://databento.monday.com/boards/1029994357/pulses/1410410501,https://databento.monday.com/boards/1029994357/pulses/1410410501/posts/1058080090
-2021-06-21 16:10:48.633447,chelsea,chelsea,UMDU6FCDT,Platform,https://app0.databento.com/support this form should not be accessible to visitors,5,1,Disable /support to visitors.,platform /support,N/A,1410411870,1058080854,https://databento.monday.com/boards/1029994357/pulses/1410411870,https://databento.monday.com/boards/1029994357/pulses/1410411870/posts/1058080854
-2021-06-21 16:25:43.178899,chelsea,chelsea,UMDU6FCDT,Platform,"Add a newline between ""Databento provides the same raw data..."" and ""Get your cost estimate ->"" link. The same way it is done in the Latency matrix section.",2,1,N/A,Platform landing page,N/A,1410474627,1058098760,https://databento.monday.com/boards/1029994357/pulses/1410474627,https://databento.monday.com/boards/1029994357/pulses/1410474627/posts/1058098760
-2021-06-21 17:08:44.344360,chelsea,chelsea,UMDU6FCDT,Platform,Test out using compressed svg files,2,2,N/A,"Landing page graphics pixelated, scrolling is slow.",N/A,1410641639,1058156165,https://databento.monday.com/boards/1029994357/pulses/1410641639,https://databento.monday.com/boards/1029994357/pulses/1410641639/posts/1058156165
-2021-06-22 09:28:00.095784,chelsea,chelsea,UMDU6FCDT,Platform,One time cost should not go with /month.,3,3,"Remove ""/month""",/pricing page,N/A,1412782714,1058981886,https://databento.monday.com/boards/1029994357/pulses/1412782714,https://databento.monday.com/boards/1029994357/pulses/1412782714/posts/1058981886
-2021-06-22 10:10:12.454692,chelsea,chelsea,UMDU6FCDT,Platform,Join us in building transformative tech -> Join us in building transformative technology,3,1,"""Join us in building transformative technology""","Under ""Company"" tab",N/A,1412959313,1059052674,https://databento.monday.com/boards/1029994357/pulses/1412959313,https://databento.monday.com/boards/1029994357/pulses/1412959313/posts/1059052674
-2021-06-22 10:11:03.713325,chelsea,chelsea,UMDU6FCDT,Platform,3 Devices -> 3 devices,3,1,3 devices,Landing page,N/A,1412962025,1059054525,https://databento.monday.com/boards/1029994357/pulses/1412962025,https://databento.monday.com/boards/1029994357/pulses/1412962025/posts/1059054525
-2021-06-22 18:56:50.621124,chelsea,chelsea,UMDU6FCDT,Both,Databento logo on error page should route to landing/browse page,5,1,N/A,See error pages,N/A,1414902967,1059855516,https://databento.monday.com/boards/1029994357/pulses/1414902967,https://databento.monday.com/boards/1029994357/pulses/1414902967/posts/1059855516
-2021-06-23 11:14:12.545459,chelsea,chelsea,UMDU6FCDT,Platform,"Related to previous bug filed, generally the mobile app is not too functional because there’s “play” for it to wiggle left and right
-4:51
-The app should be strictly up-down when you use it on mobile",3,3,"The app should be strictly up-down when you use it on mobile
-
-No left-right motion",Wiggle app left/right on mobile.,N/A,1417066367,1061271729,https://databento.monday.com/boards/1029994357/pulses/1417066367,https://databento.monday.com/boards/1029994357/pulses/1417066367/posts/1061271729
-2021-06-23 11:15:02.722583,chelsea,chelsea,UMDU6FCDT,Platform,"Autocomplete is still not working fully - for example, the filter on asset class doesn’t work: selecting FUTURES then searching “ES” doesn’t have any result",2,5,Search results should appear,"Click ""Future"" tab filter and search ""ES"".",N/A,1417075415,1061277306,https://databento.monday.com/boards/1029994357/pulses/1417075415,https://databento.monday.com/boards/1029994357/pulses/1417075415/posts/1061277306
-2021-06-23 14:41:57.931655,chelsea,chelsea,UMDU6FCDT,Platform,Add space between “1” and “min”,2,1,N/A,Landing page,N/A,1417904090,1061606693,https://databento.monday.com/boards/1029994357/pulses/1417904090,https://databento.monday.com/boards/1029994357/pulses/1417904090/posts/1061606693
-2021-06-23 15:30:17.641137,chelsea,chelsea,UMDU6FCDT,Platform,AC Search results contains some data that is unmatched.,2,4,N/A,Search 'ES' on landing page,N/A,1418098443,1061683444,https://databento.monday.com/boards/1029994357/pulses/1418098443,https://databento.monday.com/boards/1029994357/pulses/1418098443/posts/1061683444
-2021-06-23 15:34:09.988266,chelsea,chelsea,UMDU6FCDT,Platform,"XNAS.ITCH has no metadata, so can't filter it.",2,4,N/A,Filters don't work on Nasdaq dataset,N/A,1418113324,1061688571,https://databento.monday.com/boards/1029994357/pulses/1418113324,https://databento.monday.com/boards/1029994357/pulses/1418113324/posts/1061688571
-2021-06-23 16:17:39.094943,ll_slack,ll_slack,UMDEAFX52,Platform,Search form resizes while typing,1,2,Should not wobble.,"Type a search string like ""GME"", then delete it completely. See the rightmost of the search form where it meets the search button.","Mac OS, 2560x1440, Chrome",1418283254,1061754287,https://databento.monday.com/boards/1029994357/pulses/1418283254,https://databento.monday.com/boards/1029994357/pulses/1418283254/posts/1061754287
-2021-06-23 17:04:56.214875,ll_slack,ll_slack,UMDEAFX52,Platform,"When scrolling past bottom of the page, extra whitespace shows up at bottom",2,2,Should not overscroll.,"Log in, scroll to the bottom and keep scrolling.","Mac OS, Chrome, 2560x1440",1418435035,1061815002,https://databento.monday.com/boards/1029994357/pulses/1418435035,https://databento.monday.com/boards/1029994357/pulses/1418435035/posts/1061815002
-2021-06-23 17:12:36.885801,ll_slack,ll_slack,UMDEAFX52,Platform,"Request builder doesn't handle two datasets.
-1) NASDAQ dataset has no dataset name.
-2) When you add instruments from two datasets (CME, NASDAQ), the RB simply overrides the active dataset and does not notify you of the conflict.",2,4,"1) NASDAQ dataset name should be present.
-2) If instrument from another dataset is added, notification should given and you should be prompted to decide if you want to clear your current selections.",Search ES. Add ES. Search GME. Add GME.,"Mac OS, 2560x1440, Chrome",1418462935,1061822776,https://databento.monday.com/boards/1029994357/pulses/1418462935,https://databento.monday.com/boards/1029994357/pulses/1418462935/posts/1061822776
-2021-06-23 17:40:57.643792,chelsea,chelsea,UMDU6FCDT,Platform,"""Since XXXX-XX-XX"" date is incorrect for CME + Nasdaq
-
-""Available history"" filters incorrect for CME + Nasdaq
-
-https://databento.slack.com/archives/CNHCL6Z8S/p1624431172449000",2,4,N/A,"Data available to neko right now
-GLBX.MDP3: 2020-12-27 to 2021-01-01
-XNAS.ITCH: 2015-04-01 to 2015-04-20
-
-Search `ES` and try 2020-12-27 to 2021-01-01 for Available history filter. 
-
-Search `AAPL` and try 2015-04-01 to 2015-04-20 for Available history filter. Notice that changing the dates to 2015-03-31 to 2015-04-21 still produces Nasdaq data results.",N/A,1418521674,1061851093,https://databento.monday.com/boards/1029994357/pulses/1418521674,https://databento.monday.com/boards/1029994357/pulses/1418521674/posts/1061851093
-2021-06-24 15:29:44.489745,chelsea,chelsea,UMDU6FCDT,Platform,"I think the download center interaction looks awkward - there's a ""clear selections"" link even after your request has been submitted, probably makes more sense to remove that, show the Done button as the loading is still running:",4,2,N/A,Download center downloading state,N/A,1421908716,1063210501,https://databento.monday.com/boards/1029994357/pulses/1421908716,https://databento.monday.com/boards/1029994357/pulses/1421908716/posts/1063210501
-2021-06-24 15:39:46.500562,chelsea,chelsea,UMDU6FCDT,Platform,"Code runner ""reset"" button should return code runner to initial state. It should not ""run"" the code again.",2,2,N/A,"Run, then reset code runner on landing page.",N/A,1421937595,1063223576,https://databento.monday.com/boards/1029994357/pulses/1421937595,https://databento.monday.com/boards/1029994357/pulses/1421937595/posts/1063223576
-2021-06-24 15:40:37.901191,chelsea,chelsea,UMDU6FCDT,Platform,"UTC timezone dropdown (X) out issue.
-
-Remove (X) out, if the entry is invalid, return to last valid state. The input should not be empty.",2,2,N/A,"Remove (X) out, if the entry is invalid, return to last valid state. The input should not be empty.",N/A,1421946086,1063224634,https://databento.monday.com/boards/1029994357/pulses/1421946086,https://databento.monday.com/boards/1029994357/pulses/1421946086/posts/1063224634
-2021-06-24 16:06:40.746247,chelsea,chelsea,UMDU6FCDT,Platform,"Here's a set of writing changes to make:
-1. Join waitlist button (top right nav AND landing page call-to-action container) -> Get Early Access
-2. For the waitlist signup, (i) remove left column content (text above graphic), (ii) shorten introduction header to Early Access Program, (iii) Join our waitlist for early access and receive a $200 credit towards historical data.
-3. For hero container, let's change it to Try Databento | Customize and get your historical and live data
-4. For the search results table, (i) let's change the ""DATASETS"" column to ""DATASET / DATE ADDED"". Plural is incorrect. (ii) We can also remove the ""Since"" word that is repetitive now that we have ""Date added"" in the column header.",1,5,N/A,See above.,N/A,,,,
-2021-06-24 16:08:06.368983,chelsea,chelsea,UMDU6FCDT,Platform,Text changes,1,5,"Here's a set of writing changes to make:
-1. Join waitlist button (top right nav AND landing page call-to-action container) -> Get Early Access
-2. For the waitlist signup, (i) remove left column content (text above graphic), (ii) shorten introduction header to Early Access Program, (iii) Join our waitlist for early access and receive a $200 credit towards historical data.
-3. For hero container, let's change it to Try Databento | Customize and get your historical and live data
-4. For the search results table, (i) let's change the ""DATASETS"" column to ""DATASET / DATE ADDED"". Plural is incorrect. (ii) We can also remove the ""Since"" word that is repetitive now that we have ""Date added"" in the column header.",See locations below.,N/A,1422049747,1063262801,https://databento.monday.com/boards/1029994357/pulses/1422049747,https://databento.monday.com/boards/1029994357/pulses/1422049747/posts/1063262801
-2021-06-24 16:47:12.681588,ll_slack,ll_slack,UMDEAFX52,Platform,"In search/ac results table, we are rendering a double space between the publisher name and dataset name, e.g. ""CME  Globex MDP 3.0"".",1,1,should be single space instead of double,N/A,N/A,1422187581,1063308093,https://databento.monday.com/boards/1029994357/pulses/1422187581,https://databento.monday.com/boards/1029994357/pulses/1422187581/posts/1063308093
-2021-06-24 16:49:41.490622,siqichen,siqichen,U014B3W8BUJ,Platform,"pricing page ""one time cost = Unit price x data size"" should be ""One time cost = Unit price x data size""",2,1,N/A,pricing - historical data,N/A,1422198582,1063310899,https://databento.monday.com/boards/1029994357/pulses/1422198582,https://databento.monday.com/boards/1029994357/pulses/1422198582/posts/1063310899
-2021-06-24 17:15:21.601857,chelsea,chelsea,UMDU6FCDT,Platform,Add Nasdaq logo to all instances of XNAS.ITCH,3,1,N/A,Add any instrument from Nasdaq dataset to request builder?,N/A,1422287442,1063340222,https://databento.monday.com/boards/1029994357/pulses/1422287442,https://databento.monday.com/boards/1029994357/pulses/1422287442/posts/1063340222
-2021-06-25 14:37:40.545231,chelsea,chelsea,UMDU6FCDT,Platform,"Update text on format tooltip
-
-Old:
-Reference     description
-Status           description
-
-New:
-Definition     Security definitions, reference data, symbol list
-Status            Security status, trading status, market status",3,3,N/A,Hover on format tooltip.,N/A,1425060342,1064506895,https://databento.monday.com/boards/1029994357/pulses/1425060342,https://databento.monday.com/boards/1029994357/pulses/1425060342/posts/1064506895
-2021-06-25 15:21:28.535097,chelsea,chelsea,UMDU6FCDT,Platform,Skeleton loading state does not wait for graphic to load/size up before 'unveiling' the page.,1,1,The skeleton state should be shown until the graphic on multidocs home page is fully loaded and sized up.,"Clear caches, use location far from Bos on a VPN, load multidocs home page.",N/A,1425242803,1064557031,https://databento.monday.com/boards/1029994357/pulses/1425242803,https://databento.monday.com/boards/1029994357/pulses/1425242803/posts/1064557031
-2021-06-25 15:31:26.579915,chelsea,chelsea,UMDU6FCDT,Both,FOUT issue on error pages. Low prio.,5,1,N/A,CC: @luca,N/A,1425264252,1064567879,https://databento.monday.com/boards/1029994357/pulses/1425264252,https://databento.monday.com/boards/1029994357/pulses/1425264252/posts/1064567879
-2021-06-25 18:40:03.089643,siqichen,siqichen,U014B3W8BUJ,Platform,"style issue of buttons in code runner:
-- icons not vertically aligned
-- arrow icon color is wrong
-- the shadow of two buttons should be consistant",1,1,N/A,landing page,N/A,1425674244,1064725943,https://databento.monday.com/boards/1029994357/pulses/1425674244,https://databento.monday.com/boards/1029994357/pulses/1425674244/posts/1064725943
-2021-06-26 16:07:20.616931,chelsea,chelsea,UMDU6FCDT,Platform,"Pixelated favicon. 
-Interestingly even the old favicon appears to be not pixelated in comparison. also interestingly, the multidocs site has a much more pixelated favicon than the platform site O_O",1,2,See in comparison to Quandl,Open tab.,N/A,1426400298,1064971242,https://databento.monday.com/boards/1029994357/pulses/1426400298,https://databento.monday.com/boards/1029994357/pulses/1426400298/posts/1064971242
-2021-06-26 16:09:28.213995,chelsea,chelsea,UMDU6FCDT,Platform,"When I try to start a similar request in the download center, I get this. I don’t think this is intentional, because I occasionally get the download request page with the appropriate instrument request",3,5,N/A,click on row w expired status.,N/A,1426405196,1064971548,https://databento.monday.com/boards/1029994357/pulses/1426405196,https://databento.monday.com/boards/1029994357/pulses/1426405196/posts/1064971548
-2021-06-26 16:15:20.641360,chelsea,chelsea,UMDU6FCDT,Platform,"Missing ""Details"" column data",4,5,N/A,"Just curious as to whether the data is being fed in for the “Details” column. From what I see we have the data on when it expires and when its requested so I was wondering if the time range, time zone and the rest might be left out because of a bug. If it’s due to lack of data then this is not a bug.",N/A,1426412764,1064972536,https://databento.monday.com/boards/1029994357/pulses/1426412764,https://databento.monday.com/boards/1029994357/pulses/1426412764/posts/1064972536
-2021-06-26 16:16:25.311893,chelsea,chelsea,UMDU6FCDT,Platform,"When I am logged in and click on the system status page, I am still shown the “Get Early Access” button/dropdown. Might be a better idea to remove it to avoid confusing the user when they are logged in?",3,2,N/A,Go to system status page while logged in.,N/A,1426413093,1064972657,https://databento.monday.com/boards/1029994357/pulses/1426413093,https://databento.monday.com/boards/1029994357/pulses/1426413093/posts/1064972657
-2021-06-26 16:21:23.915086,chelsea,chelsea,UMDU6FCDT,Platform,Improve copy in Set team budget modal,3,2,"I think the language used in this could be improved.
-Instead of
-“How does the budget work?
-You will get notification when exceeding 90% of budget.
-The service will terminate reach 100% of budget.”
-->
-“How do team budgets work?
-You will be notified when you exceed 90% of your allocated team budget.
-Our services will automatically terminate once you use up 100% of the budget.”",set team budget link on billing page,N/A,1426415263,1064973314,https://databento.monday.com/boards/1029994357/pulses/1426415263,https://databento.monday.com/boards/1029994357/pulses/1426415263/posts/1064973314
-2021-06-26 16:21:54.827220,chelsea,chelsea,UMDU6FCDT,Platform,'Cpp' should be 'C++',5,1,N/A,Select integration dropdown in code runner,N/A,1426415418,1064973373,https://databento.monday.com/boards/1029994357/pulses/1426415418,https://databento.monday.com/boards/1029994357/pulses/1426415418/posts/1064973373
-2021-06-26 16:23:04.732317,chelsea,chelsea,UMDU6FCDT,Platform,Improve 503 error copy,5,1,"Can't reach our servers?
-503 Gateway Timeout
-An error has occurred and we’re working to fix the problem. We’ll be up and running again shortly. Please try to refresh this page later.
-If you need immediate assistance from our support team, please contact us.",503 error page,N/A,1426415723,1064973497,https://databento.monday.com/boards/1029994357/pulses/1426415723,https://databento.monday.com/boards/1029994357/pulses/1426415723/posts/1064973497
-2021-06-26 16:31:09.799718,chelsea,chelsea,UMDU6FCDT,Platform,"""Paid due"" -> ""Payment due""",3,2,N/A,Go to billing page,N/A,1426419341,1064974534,https://databento.monday.com/boards/1029994357/pulses/1426419341,https://databento.monday.com/boards/1029994357/pulses/1426419341/posts/1064974534
-2021-06-26 16:44:08.753548,chelsea,chelsea,UMDU6FCDT,Platform,Fixed text sizing for testimonial section (previous fix) to prevent shifting,3,1,N/A,Switch around testimonials in the testimonial section,N/A,1426426142,1064976478,https://databento.monday.com/boards/1029994357/pulses/1426426142,https://databento.monday.com/boards/1029994357/pulses/1426426142/posts/1064976478
-2021-06-28 11:38:54.340562,chelsea,chelsea,UMDU6FCDT,Platform,Language on /billing page,2,1,N/A,"Unpaid -> Past Due
-Payment due -> Due in N days*
-*Where N is how many days left before bill is due",N/A,1429701583,1066175686,https://databento.monday.com/boards/1029994357/pulses/1429701583,https://databento.monday.com/boards/1029994357/pulses/1429701583/posts/1066175686
-2021-06-28 11:41:08.124226,chelsea,chelsea,UMDU6FCDT,Platform,Update Free Tier section text,2,2,“Sign up for Early Access Program and get $200 Free credit” -> “Sign up for our Early Access Program and get $200 worth of credit”,Landing page,N/A,1429711646,1066179803,https://databento.monday.com/boards/1029994357/pulses/1429711646,https://databento.monday.com/boards/1029994357/pulses/1429711646/posts/1066179803
-2021-06-28 11:43:21.641028,chelsea,chelsea,UMDU6FCDT,Platform,Pricing text changes,4,3,“Data from 24 hours ago or later” -> “Data from 24 hours ago or earlier”,/pring,N/A,1429726834,1066183655,https://databento.monday.com/boards/1029994357/pulses/1429726834,https://databento.monday.com/boards/1029994357/pulses/1429726834/posts/1066183655
-2021-06-28 11:48:35.664753,chelsea,chelsea,UMDU6FCDT,Platform,Pricing page: Should be “An instrument” instead of “An instruments”,3,2,Should be “An instrument” instead of “An instruments”,/pricing,N/A,1429758483,1066192798,https://databento.monday.com/boards/1029994357/pulses/1429758483,https://databento.monday.com/boards/1029994357/pulses/1429758483/posts/1066192798
-2021-06-28 11:49:53.940616,chelsea,chelsea,UMDU6FCDT,Platform,/pricing page issues,4,2,N/A,"""License fees are passed through from the publisher and only apply to live data.” ->""License fees are charged by the publisher and only apply to live data"".",N/A,1429769420,1066195065,https://databento.monday.com/boards/1029994357/pulses/1429769420,https://databento.monday.com/boards/1029994357/pulses/1429769420/posts/1066195065
-2021-06-28 11:50:44.470755,chelsea,chelsea,UMDU6FCDT,Platform,Inconsistent casing for job listings e.g. Growth marketer instead of Growth Marketer,4,1,N/A,careers page,N/A,1429771770,1066196686,https://databento.monday.com/boards/1029994357/pulses/1429771770,https://databento.monday.com/boards/1029994357/pulses/1429771770/posts/1066196686
-2021-06-28 11:54:12.383282,chelsea,chelsea,UMDU6FCDT,Platform,Contact Us page issues,5,2,"""Get help with integration, technical issues, feature requests and bug reports.""",/contact,N/A,1429784944,1066203863,https://databento.monday.com/boards/1029994357/pulses/1429784944,https://databento.monday.com/boards/1029994357/pulses/1429784944/posts/1066203863
-2021-06-28 11:56:51.729193,chelsea,chelsea,UMDU6FCDT,Platform,Slack Join grammar error,2,1,"“Get live support, chat with developers and other users.” -> “Get live support, chat with developers, and other users.”",landing pg,N/A,1429795626,1066207817,https://databento.monday.com/boards/1029994357/pulses/1429795626,https://databento.monday.com/boards/1029994357/pulses/1429795626/posts/1066207817
-2021-06-28 11:58:54.782241,chelsea,chelsea,UMDU6FCDT,Platform,replace dataset copy,3,2,"When replacing datasets, the grammar for the warning can be improved. “Are your sure replace the NASDAQ trading data dataset with CME Globex MDP 3.0?
-This action will abandon all of your selected instruments and customizations for the NASDAQ trading data dataset.” - > “Are you sure that you wish to replace the NASDAQ trading data dataset with CME Globex MDP 3.0? This will abandon all of your selected instruments and customizations for the NASDAQ trading data dataset so far.”",replace dataset,N/A,1429820704,1066212811,https://databento.monday.com/boards/1029994357/pulses/1429820704,https://databento.monday.com/boards/1029994357/pulses/1429820704/posts/1066212811
-2021-06-28 12:08:04.265476,chelsea,chelsea,UMDU6FCDT,Platform,Set team budget issues,4,2,"I think the language used in this could be improved.
-Instead of
-“How does the budget work?
-You will get notification when exceeding 90% of budget.
-The service will terminate reach 100% of budget.”
-->
-“How do team budgets work?
-You will be notified when you exceed 90% of your allocated team budget.
-Our services will automatically terminate once you use up 100% of the budget.”",set team budget on billing page,N/A,1429855259,1066229422,https://databento.monday.com/boards/1029994357/pulses/1429855259,https://databento.monday.com/boards/1029994357/pulses/1429855259/posts/1066229422
-2021-06-28 12:22:19.412421,chelsea,chelsea,UMDU6FCDT,Platform,"Redirect page references ""dashboard"" even though we don't use the term dashboard anywhere:",1,3,"""Redirecting to your dashboard"" -> ""Redirecting you to Home...""
-
-""Open dashboard"" -> ""Go Home""",Public sign up page,N/A,1429931640,1066252756,https://databento.monday.com/boards/1029994357/pulses/1429931640,https://databento.monday.com/boards/1029994357/pulses/1429931640/posts/1066252756
-2021-06-28 12:25:54.104457,chelsea,chelsea,UMDU6FCDT,Platform,landing page copy,2,3,"Should be “no third-party data providers in-between”.
-
-And
-“Multiple encodings (binary, CSV, JSON), and sampling frequencies (tick, second, minute).”
-Reasoning there is second aggregation is much rarer, and I don’t think we do a daily aggregation anymore?",landing page,N/A,1429946386,1066258268,https://databento.monday.com/boards/1029994357/pulses/1429946386,https://databento.monday.com/boards/1029994357/pulses/1429946386/posts/1066258268
-2021-06-28 12:50:00.438070,siqichen,siqichen,U014B3W8BUJ,Platform,nasdaq dataset should be clickable,1,4,N/A,landing page / browse page - datasets,N/A,1430063468,1066299750,https://databento.monday.com/boards/1029994357/pulses/1430063468,https://databento.monday.com/boards/1029994357/pulses/1430063468/posts/1066299750
-2021-06-28 13:16:32.830595,siqichen,siqichen,U014B3W8BUJ,Platform,text in chips are not center-aligned after the chips get sticky in detail page - fields,3,1,N/A,detail page - scrolling to fields - scroll to get the chips sticky,N/A,1430164176,1066350587,https://databento.monday.com/boards/1029994357/pulses/1430164176,https://databento.monday.com/boards/1029994357/pulses/1430164176/posts/1066350587
-2021-06-28 13:44:29.576613,siqichen,siqichen,U014B3W8BUJ,Platform,"instrument detail page price - ""add instruments to get exact price"" should be ""add this instrument to get exact price""
-- enable the link
-- clicking it will add the instrument to request widget",2,2,N/A,instrument detail page -price,N/A,1430277959,1066390000,https://databento.monday.com/boards/1029994357/pulses/1430277959,https://databento.monday.com/boards/1029994357/pulses/1430277959/posts/1066390000
-2021-06-28 15:45:09.544633,chelsea,chelsea,UMDU6FCDT,Platform,"Remove ""Get institutional quality data..."" text for the /login page",1,1,N/A,/login page,N/A,1430826664,1066594348,https://databento.monday.com/boards/1029994357/pulses/1430826664,https://databento.monday.com/boards/1029994357/pulses/1430826664/posts/1066594348
-2021-06-28 23:55:45.803501,ll_slack,ll_slack,UMDEAFX52,Platform,"Spacing between ""Please try to  "" and ""refresh"" too big for 500 internal server error.",4,2,1 space less?,Get a 500 internal server error :),N/A,1432037368,1067031992,https://databento.monday.com/boards/1029994357/pulses/1432037368,https://databento.monday.com/boards/1029994357/pulses/1432037368/posts/1067031992
-2021-06-29 02:20:06.063717,ll_slack,ll_slack,UMDEAFX52,Platform,Landing page Two Sigma icon above the quote is broken.,2,2,N/A,Click on Two Sigma logo on logo strip. See above the quote.,N/A,1432259915,1067094418,https://databento.monday.com/boards/1029994357/pulses/1432259915,https://databento.monday.com/boards/1029994357/pulses/1432259915/posts/1067094418
-2021-06-29 14:19:42.486180,siqichen,siqichen,U014B3W8BUJ,Platform,career page title width too short,2,1,N/A,career page,N/A,1434673346,1068056488,https://databento.monday.com/boards/1029994357/pulses/1434673346,https://databento.monday.com/boards/1029994357/pulses/1434673346/posts/1068056488
-2021-06-29 14:22:37.964491,siqichen,siqichen,U014B3W8BUJ,Platform,"UTC tag size & alignment
-- double check UTC tag in detail page and table headers",3,1,N/A,dataset detail page - spec / instrument list,N/A,1434683742,1068061386,https://databento.monday.com/boards/1029994357/pulses/1434683742,https://databento.monday.com/boards/1029994357/pulses/1434683742/posts/1068061386
-2021-06-29 15:38:55.242706,chelsea,chelsea,UMDU6FCDT,Platform,Space between filter chips and search results table disappears at width: ~5XX to ~7XX,3,2,N/A,Width @500-790 (see video for exact width sizes),N/A,1435018608,1068178179,https://databento.monday.com/boards/1029994357/pulses/1435018608,https://databento.monday.com/boards/1029994357/pulses/1435018608/posts/1068178179
-2021-06-29 15:44:12.187647,chelsea,chelsea,UMDU6FCDT,Platform,Issues with download center,4,5,"1. Issue with pagination at bottom of window. Pagination section should always stay within window. 
-2. UTC tag should be vertically center-aligned with text it stands next to.
-3. There should be a space between - and HTTP. See ""Trades - Binary -HTTP"" under Details. 
-4. Improve Details collapse/expanse animation. 
-5. Instruments number shows ""0"".",Click on request item in /download-center,N/A,1435032090,1068183849,https://databento.monday.com/boards/1029994357/pulses/1435032090,https://databento.monday.com/boards/1029994357/pulses/1435032090/posts/1068183849
-2021-06-30 02:34:23.893351,ll_slack,ll_slack,UMDEAFX52,Platform,"""xx most active"" tooltip in pricing calculator is traveling around the screen as you scroll.",2,3,Should be stuck to slider,Go to pricing calculator,"Mac OS, 2560x1600, Chrome",1436419011,1068662711,https://databento.monday.com/boards/1029994357/pulses/1436419011,https://databento.monday.com/boards/1029994357/pulses/1436419011/posts/1068662711
-2021-06-30 02:38:27.433484,ll_slack,ll_slack,UMDEAFX52,Platform,Pricing calculator is displaying prices in 1 decimal place. Should be 2.,2,2,should be 2 decimal place,N/A,N/A,1436423839,1068664943,https://databento.monday.com/boards/1029994357/pulses/1436423839,https://databento.monday.com/boards/1029994357/pulses/1436423839/posts/1068664943
-2021-06-30 14:32:31.961198,chelsea,chelsea,UMDU6FCDT,Platform,instrument detail page is no longer calling /v1/dataset/price_estimate  endpoint?,3,5,I see https://api0.databento.com/v1/dataset/price_estimate/GLBX.MDP3?instrument=ZW is working,Try 'ZW' instrument detail page,N/A,1438972774,1069636657,https://databento.monday.com/boards/1029994357/pulses/1438972774,https://databento.monday.com/boards/1029994357/pulses/1438972774/posts/1069636657
-2021-06-30 17:28:01.366347,siqichen,siqichen,U014B3W8BUJ,Platform,download center - row height of http file list should be consistent,4,1,"row height is 32px
-how many rows show per page depends on page height
-with an increment of 5, 
-eg. 15 rows / page, 20 rows/page, 25 rows/page",download center - http download detail,N/A,1439757211,1069893319,https://databento.monday.com/boards/1029994357/pulses/1439757211,https://databento.monday.com/boards/1029994357/pulses/1439757211/posts/1069893319
-2021-06-30 18:54:18.000213,siqichen,siqichen,U014B3W8BUJ,Platform,remove the white stripe on top of contact us page,2,1,N/A,contact us page - scroll down to hide the topbar,N/A,1439992722,1069978555,https://databento.monday.com/boards/1029994357/pulses/1439992722,https://databento.monday.com/boards/1029994357/pulses/1439992722/posts/1069978555
-2021-07-01 09:45:08.893034,chelsea,chelsea,UMDU6FCDT,Platform,"On GLBX detail page, needs a space before MDP on second last line of pic.",5,1,N/A,Dataset detail page,N/A,1441973535,1070783299,https://databento.monday.com/boards/1029994357/pulses/1441973535,https://databento.monday.com/boards/1029994357/pulses/1441973535/posts/1070783299
-2021-07-01 09:46:35.994279,chelsea,chelsea,UMDU6FCDT,Platform,Currently seeing a bug where clicking around the Fields adds side as the first row and they start accumulating as you click,3,2,N/A,Dataset detail fields,N/A,1441981071,1070785412,https://databento.monday.com/boards/1029994357/pulses/1441981071,https://databento.monday.com/boards/1029994357/pulses/1441981071/posts/1070785412
-2021-07-01 09:54:22.022185,ll_slack,ll_slack,UMDEAFX52,Platform,"Color of ""Due in X days"" on billing page should not be red",4,2,Yellow? Green?,N/A,N/A,1442017585,1070798346,https://databento.monday.com/boards/1029994357/pulses/1442017585,https://databento.monday.com/boards/1029994357/pulses/1442017585/posts/1070798346
-2021-07-15 15:04:11.990891,chelsea,chelsea,UMDU6FCDT,Platform,TypeError on log in,1,5,N/A,I created an account and then logged in immediately after.,N/A,1486309001,1086846978,https://databento.monday.com/boards/1029994357/pulses/1486309001,https://databento.monday.com/boards/1029994357/pulses/1486309001/posts/1086846978
-2021-07-15 15:07:38.814273,chelsea,chelsea,UMDU6FCDT,Platform,"improve | confirm email page has feeling of being ""permanently stuck on same page""",1,3,N/A,Create account -> Confirm email page,N/A,1486325982,1086851395,https://databento.monday.com/boards/1029994357/pulses/1486325982,https://databento.monday.com/boards/1029994357/pulses/1486325982/posts/1086851395
-2021-07-15 15:08:33.485256,chelsea,chelsea,UMDU6FCDT,Platform,"3 ""side""s in fields of dataset/instrument detail pages",3,4,N/A,instrument/dataset detail pages,N/A,1486331565,1086852413,https://databento.monday.com/boards/1029994357/pulses/1486331565,https://databento.monday.com/boards/1029994357/pulses/1486331565/posts/1086852413
-2021-07-15 15:10:06.123205,chelsea,chelsea,UMDU6FCDT,Platform,Scroll bar appears while sliding around the format chips in instrument/dataset detail page,3,2,N/A,Dataset/instrument detail page scrollbar,N/A,1486338456,1086854293,https://databento.monday.com/boards/1029994357/pulses/1486338456,https://databento.monday.com/boards/1029994357/pulses/1486338456/posts/1086854293
-2021-07-15 15:15:42.553729,chelsea,chelsea,UMDU6FCDT,Platform,Typo in format chip popper and format header tooltip.,2,1,"""Learn about format"" -> ""Learn more about supported formats""
-""Read more about supported data formats"" -> ""Learn more about supported formats""",Click format filter chip to see popper. Click format column header to see tooltip.,N/A,1486357165,1086861642,https://databento.monday.com/boards/1029994357/pulses/1486357165,https://databento.monday.com/boards/1029994357/pulses/1486357165/posts/1086861642
-2021-07-15 15:42:48.435494,siqichen,siqichen,U014B3W8BUJ,Platform,product list session has too much top padding,2,1,N/A,instrument detail page - product list,N/A,1486455382,1086928419,https://databento.monday.com/boards/1029994357/pulses/1486455382,https://databento.monday.com/boards/1029994357/pulses/1486455382/posts/1086928419
-2021-07-16 11:09:04.763338,chelsea,chelsea,UMDU6FCDT,Platform,Logged-in top nav issues,3,2,"Top nav when logged in:
-1. top nav should always be sticky on dataset detail and instrument detail pages. 
-2. browse page nav will show a line separator once you scroll down; line separator should look like doc site's
-3. remove shadow from line separator on detail page",Log in and play around with top nav.,N/A,1488885939,1087854066,https://databento.monday.com/boards/1029994357/pulses/1488885939,https://databento.monday.com/boards/1029994357/pulses/1488885939/posts/1087854066
-2021-07-21 13:36:04.377429,ll_slack,ll_slack,UMDEAFX52,Platform,Bottom left corner of side nav is not fully covered.,2,2,N/A,N/A,"Mac OS, 2560x1440, Chrome",1503331283,1092952575,https://databento.monday.com/boards/1029994357/pulses/1503331283,https://databento.monday.com/boards/1029994357/pulses/1503331283/posts/1092952575
-2021-07-22 17:34:07.116307,siqichen,siqichen,U014B3W8BUJ,Platform,info link in data request builder to streaming / download doc is invalid,3,3,N/A,data quest builder - stream/download info icon,N/A,1508197498,1094723555,https://databento.monday.com/boards/1029994357/pulses/1508197498,https://databento.monday.com/boards/1029994357/pulses/1508197498/posts/1094723555
-2021-07-22 17:46:15.881430,siqichen,siqichen,U014B3W8BUJ,Multidocs,search filters need to be updated,2,3,N/A,docs - search,N/A,1508234330,1094737644,https://databento.monday.com/boards/1029994357/pulses/1508234330,https://databento.monday.com/boards/1029994357/pulses/1508234330/posts/1094737644
-2021-07-23 16:31:58.066617,chelsea,chelsea,UMDU6FCDT,Platform,UTC tag off-center vertically in Expiration column header in instrument-detail pages,3,2,N/A,instrument-detail page,N/A,1511247560,1096025408,https://databento.monday.com/boards/1029994357/pulses/1511247560,https://databento.monday.com/boards/1029994357/pulses/1511247560/posts/1096025408
-2021-07-25 23:28:33.988275,chelsea,chelsea,UMDU6FCDT,Platform,"Can link ""@DatabentoHQ"" to https://twitter.com/databentohq",5,1,N/A,systems page,N/A,1513747071,1096817694,https://databento.monday.com/boards/1029994357/pulses/1513747071,https://databento.monday.com/boards/1029994357/pulses/1513747071/posts/1096817694
-2021-07-25 23:29:34.942047,chelsea,chelsea,UMDU6FCDT,Platform,"""@DatabentoHQ"" can be linked to https://twitter.com/databentohq",5,1,N/A,systems status,N/A,1513748464,1096818124,https://databento.monday.com/boards/1029994357/pulses/1513748464,https://databento.monday.com/boards/1029994357/pulses/1513748464/posts/1096818124
-2021-07-27 12:05:27.003928,chelsea,chelsea,UMDU6FCDT,Platform,How to make latency status chip cleaner when request is not successful or when request is loading (Improve on N/A ms wide spacing issue),2,1,N/A,Look at latency status chip right on log in,N/A,1520366294,1099288030,https://databento.monday.com/boards/1029994357/pulses/1520366294,https://databento.monday.com/boards/1029994357/pulses/1520366294/posts/1099288030
-2021-07-27 12:24:09.649728,chelsea,chelsea,UMDU6FCDT,Multidocs,tes,1,5,N/A,asdf,N/A,1520436042,1099319000,https://databento.monday.com/boards/1029994357/pulses/1520436042,https://databento.monday.com/boards/1029994357/pulses/1520436042/posts/1099319000
-2021-07-27 12:25:23.366455,chelsea,chelsea,UMDU6FCDT,Platform,test,3,4,N/A,test,N/A,1520440498,1099321108,https://databento.monday.com/boards/1029994357/pulses/1520440498,https://databento.monday.com/boards/1029994357/pulses/1520440498/posts/1099321108
+timestamp,username,real_name,user_id,site,description,visibility,impact,to_reproduce,expected_behavior,configuration,monday_item_id,monday_update_id,monday_item_url, monday_update_url
+2021-07-27 15:02:19.147362,chelsea,chelsea,UMDU6FCDT,Platform,test1,1,1,N/A,test,N/A,1521085904,1099568284,https://databento.monday.com/boards/1029994357/pulses/1521085904,https://databento.monday.com/boards/1029994357/pulses/1521085904/posts/1099568284
+2021-07-27 15:02:40.104634,chelsea,chelsea,UMDU6FCDT,Both,test,2,2,N/A,test,N/A,1521087087,1099568757,https://databento.monday.com/boards/1029994357/pulses/1521087087,https://databento.monday.com/boards/1029994357/pulses/1521087087/posts/1099568757
+2021-07-27 15:03:04.039198,chelsea,chelsea,UMDU6FCDT,Multidocs,test3,3,3,N/A,3,N/A,1521088265,1099569207,https://databento.monday.com/boards/1029994357/pulses/1521088265,https://databento.monday.com/boards/1029994357/pulses/1521088265/posts/1099569207
+2021-07-27 15:03:49.875383,chelsea,chelsea,UMDU6FCDT,Platform,"gwUSztTXsayEaQgR
+pmkzycmwZpxJvIqo
+UEd9Y2wUtiHxFCfR
+QIfP9meqg5ajMpAJ
+PmAuBaDtBuZRmR0I
+lbQjIkAXRJ6V8dZu
+LCiYEfNAbMSoh3sE
+mmkxKq4taYmOiKkI
+vDDgFMaXVmVgpEsw
+rJWLmVtoDgSTI6km
+1z5CbSoH0d1KTTOt
+joTkBbZeptoUoMpF
+5mGaOM7UHZLB0oBz
+vVH9TVRD5NlS9mfA
+EazXyqEDBBmcKh4X
+WyVDHE6fOIGbTqUa
+N41h5ToF2BYwLkAJ
+aOakQbTxZlKSJXAJ
+hElvM8yVdu5pbvRt
+modxj8Z66NRisAhv
+SNb2qJPiKoRpTuYs
+WgS2joVNy61MOIqw
+Zv4FBIvQgEMHHaZM
+GsIwXY3RVdsM5bkL
+J1gAJp21ntfkuECH
+1HPdfyV3LIMYaAVy
+MdwV0wbyoJ54fzsj
+VktffY1lWOFkSxXw
+uIGsjRl0C077wmNt
+L5lUrThGmkQDqslm
+nUnU0VcwwIouwD5F
+828mXx1wuBDdScfE
+BgwchDcQgYteQslC
+In3guDP6quq2EUc7
+kTqvXriS0Aj65fUh
+wIYURhwJO1HWyhv8
+ouBk9QhiaQPL5kxq
+StYEiuz6304WYjhu
+9VvzJMKPeyx9US12
+ZsL8EWrbpL0aSr5h
+h68dBpPMVTAWsYRZ
+kY6LxIr8OQEWYYUr
+pcib1oDUZ1zWRU6a
+kfOXv3denPzpTLS7
+ZD5FeykoqPS44dlO
+drtd5GapmOu94LXZ
+El4d5ES2Wh9Kcf7Z
+jFlBLlsfttRPHxkW
+GOLjyqBzBdw2DfoI
+QVp1NE0gd3Fyy45Q
+uiIa2buChPQOfIlp
+Ylb23KttRcnyaFTD
+JpRhVj64341BmiOh
+5ks1oS5jqN6okRNE
+Adn4j752fT2TAYyp
+cTdrb9qD5KiSqzBh
+jXFAaO9Xo4k22TbM
+v1wREDZzPvTNmSXR
+Gq6qTBI29ONuVcH2
+N7p698u2fekXrqIp
+A1O3QjvkS3qt89fy
+k8VE0F7uvy8EdY2Y
+sxOT6Fmnj25Clqnv
+EyXktrldQFpcasQu
+lXGc4M2WtZVdIuNb
+izhVXuq08YwNecX1
+uuDNSIkTmVAqbSVF
+S7C0AIW09X5fofb5
+EXvMXxVfdlgAp266
+NQu4NTNX8kVmDDfz
+rYg8tUvJEGZObj6W
+Q2WvPooecZ6UyLB4
+CBDk60DZBB6a2jjY
+9Xgtz1FEW9FQywE9
+gkIF5HVY49b5BFxq
+MBrbsQdUHjCaAxzZ
+NKmuMszmqj2rXQev
+527Eagbw6PHz98eZ
+zroE0ObFEpLqqY3h
+cRkNnRsr7JXd13pf
+wXGa32rzBRhQvEju
+40nbittRWxZpp68X
+a0tdUeayzFGbSQP6
+aPBdxNmxZqEEsOdU
+PZqnWmEQMJGUXU7D
+BEjpxwSIgNBjjOx5
+yue1r089ooEtbjR2
+9EOX4M9BIfNSUNgD
+A98OW38gvetQSx8O
+8vupWc7zl9xXuSHb
+LvbvTjyvMzqkKL1g
+3JEHgWKDOZRKjjZ4
+CRdWMMqW13DIJN3S
+B50xR9tKEBzKefpj
+K449LQrkbMl7S9g2
+hV0bsIFO1VUNbS6r
+eEghoCzf4MXcpPsm
+YF4gjsRSfK6yvTN7
+d2PxN1ljwf3o5gYQ
+hcEHq7cg5cNW4Ht8
+oQ3Dc8uHCNpvm6ra
+0Kgm1Z4m7IwVRZtm
+tqMev3HesI615DbB
+HOpHRrcGODnW422X
+ngJTgn70Z0xVQ3Im
+L460b7lfBUYCzWct
+9DdQiDNBv5ODNf6G
+YDnCTlR3p5bsVzFI
+uH2Kf9DNEZbAPBoh
+uQrBdHOPN2FgD3aB
+dTso8hKSxElUUjlk
+f5cZ8ME885ik2q13
+JOf0JjZy9HeM5sjL
+d1VoRdDsIee41lOs
+aB91dViSHt8faf2N
+gj2BECrSmgbgDLpZ
+OJ4MXGSfWoKUWqVk
+u1yRx6f2KB7zHJyq
+eE8qKbPMs62pl4Gj
+fIkVHi6XLnzT1t7E
+89cEgBd8rqiMas2a
+ZGIqWFXe75GAIavb
+fdpMw31mkxLZQGxX
+T5bziPHiQ0OU8J87
+qr7lgtjlKu5X9uwp
+PmXS29UfnLDyIOv7
+GSI8ydaUIcArJfaz
+Qp4nMETF6pF3KuLg
+8Lkrh4EgrNPTqeZD
+Jo6Z1rzrs4VlkyhK
+CiBnRJz7rgW2sZKq
+kjDB8Alw2c9LRlLI
+Zo8UpAGMoYqGRy1V
+zjKuEXNb2mbhz7dl
+j4PTo1SqWMwdYskZ
+w0YqYzMVd0UMkBpr
+SvI6jt13NQfctcbd
+bWHdtQ2eiP0XYbiL
+pA3XwnuRfYtpqQEp
+opjOjIQ9ishGP0mL
+kQOdxQunp6Aj82QM
+wh5mAkdEHlNCzJGV
+erS0KU0LexlHNErk
+CJp2rMkh4i05bXCw
+z6M8YzQcffrUysiu
+3BSRJ6S8fh9rKGGx
+Dl9MWol7MIsFXyFH
+RL5fA9d422NbPig7
+4Gt2yoeUAduYPYki
+1dnN5UCZBCQC5ces
+UVDtNQkBldYAjRFP
+0dc12BVFDptDDGkA
+7jwVFPOJwcDIyi6s
+PNEDY6kGKZHgB8S5
+Id80eDlByXE8fBXx
+mtDjSBatDSKQNVZR
+H1cL7fOAwIovkOeR
+ILEQ4tyiAgh9eleN
+gKNAWH9QPMkpG7Rh
+MNOVejmxwpXXmPYQ
+ByyLJsNQ6t7DA4xr
+iV332lF8zD1Dy42O
+m9doSYSmELe4VhOO
+aLhvSwZkrTWGSZSx
+9BKisIbomL04iDrM
+IM635ILK1ghcWC55
+Vsse6tT0Pvm7bHqr
+WMeNAbILAV2fqXcR
+TIwUsSyz4GxvcTSq
+VZYTdfqmnjxF1wUR
+3uL2Jb4Lt54Pj7IE
+LYYqWKJ1Blmwa5MV
+mnnKo2exqJfLREcm
+fpt34BPZ2K4Gf9en
+2t2UqNvEYaHvE9hF
+SRNbeWkksvuW8nZF
+SENXpLOGiTzCTC8F
+WZAYKB2MnbnCIXFI
+eKL2DfOoUSm7MuLV
+KJ8zcj2jDZtYfr77
+fXglpWj99JxRoGs0
+RreSJbxoGnRkiiZ5
+N68bQkJz8BzUoEPl
+qBcJ78w2kwB6TPqN
+pF8tw7i9Kww5j5EZ
+WN7YvxemP1eK65hC
+J1RMI7qqQbhItlJy
+1noUv8FNghpRkl2f
+82jiZr3UPKoaJug9
+BUHwHmK13eOhOup8
+tiflUQVOtWIp800Q
+ysHhOkDaAivCMpiX
+1Te1WCa7TFmG32xI
+Vwx5DIMyzSXxfbpt
+Co8KmDhClJXB7gBY
+57mJnn14FNtJSVyv
+Yae3WAHn4J6wx2s6
+ksfrZ7mKZUqfBQxd
+6gbP3pUmZqwCy1EW
+P2zVU0iPxdb257Hr
+g00myPmyUBgSWCY2
+8c2HSarvPwD17Yed
+RVe99a0ZeNglH61T
+ovuNfB02Vf3LITlR
+3iBqjC36m3eV0Fi0
+OeX4G8JWMQLoRzNX
+60oOKpFGgxC7NTcN
+cFQVN4Pbu2BUpkcO
+3QlxK8sK12FUG5HT
+osq4rkWrswbNxepV
+aGEHTUfCNCmCGkNE
+Hwxn1P7rK0yG1ARj
+d18kbMeFNZQb6ABF
+une3hvenpkLOxeeM
+7IDm89xE48WeVwxr
+DNSuE2rbmAc8B6JE
+unHwiZP36Trg1h53
+bbH43aRjN2baNX8n
+VuBLsnkk304V6hU2
+lHHnyEqK2Nh5U5uL
+MYop0Yz0KC5d7EwO
+P1neuvPf4lV7zUYL
+UyfcPm9nWEceLYnr
+dJuK3FK2wzdDEwqU
+B8PnDxbthfGNqWNV",1,1,N/A,test,N/A,1521091369,1099570236,https://databento.monday.com/boards/1029994357/pulses/1521091369,https://databento.monday.com/boards/1029994357/pulses/1521091369/posts/1099570236
+2021-07-27 15:04:14.608720,chelsea,chelsea,UMDU6FCDT,Platform,"gwUSztTXsayEaQgR
+pmkzycmwZpxJvIqo
+UEd9Y2wUtiHxFCfR
+QIfP9meqg5ajMpAJ
+PmAuBaDtBuZRmR0I
+lbQjIkAXRJ6V8dZu
+LCiYEfNAbMSoh3sE
+mmkxKq4taYmOiKkI
+vDDgFMaXVmVgpEsw
+rJWLmVtoDgSTI6km
+1z5CbSoH0d1KTTOt
+joTkBbZeptoUoMpF
+5mGaOM7UHZLB0oBz
+vVH9TVRD5NlS9mfA
+EazXyqEDBBmcKh4X
+WyVDHE6fOIGbTqUa
+N41h5ToF2BYwLkAJ
+aOakQbTxZlKSJXAJ
+hElvM8yVdu5pbvRt
+modxj8Z66NRisAhv
+SNb2qJPiKoRpTuYs
+WgS2joVNy61MOIqw
+Zv4FBIvQgEMHHaZM
+GsIwXY3RVdsM5bkL
+J1gAJp21ntfkuECH
+1HPdfyV3LIMYaAVy
+MdwV0wbyoJ54fzsj
+VktffY1lWOFkSxXw
+uIGsjRl0C077wmNt
+L5lUrThGmkQDqslm
+nUnU0VcwwIouwD5F
+828mXx1wuBDdScfE
+BgwchDcQgYteQslC
+In3guDP6quq2EUc7
+kTqvXriS0Aj65fUh
+wIYURhwJO1HWyhv8
+ouBk9QhiaQPL5kxq
+StYEiuz6304WYjhu
+9VvzJMKPeyx9US12
+ZsL8EWrbpL0aSr5h
+h68dBpPMVTAWsYRZ
+kY6LxIr8OQEWYYUr
+pcib1oDUZ1zWRU6a
+kfOXv3denPzpTLS7
+ZD5FeykoqPS44dlO
+drtd5GapmOu94LXZ
+El4d5ES2Wh9Kcf7Z
+jFlBLlsfttRPHxkW
+GOLjyqBzBdw2DfoI
+QVp1NE0gd3Fyy45Q
+uiIa2buChPQOfIlp
+Ylb23KttRcnyaFTD
+JpRhVj64341BmiOh
+5ks1oS5jqN6okRNE
+Adn4j752fT2TAYyp
+cTdrb9qD5KiSqzBh
+jXFAaO9Xo4k22TbM
+v1wREDZzPvTNmSXR
+Gq6qTBI29ONuVcH2
+N7p698u2fekXrqIp
+A1O3QjvkS3qt89fy
+k8VE0F7uvy8EdY2Y
+sxOT6Fmnj25Clqnv
+EyXktrldQFpcasQu
+lXGc4M2WtZVdIuNb
+izhVXuq08YwNecX1
+uuDNSIkTmVAqbSVF
+S7C0AIW09X5fofb5
+EXvMXxVfdlgAp266
+NQu4NTNX8kVmDDfz
+rYg8tUvJEGZObj6W
+Q2WvPooecZ6UyLB4
+CBDk60DZBB6a2jjY
+9Xgtz1FEW9FQywE9
+gkIF5HVY49b5BFxq
+MBrbsQdUHjCaAxzZ
+NKmuMszmqj2rXQev
+527Eagbw6PHz98eZ
+zroE0ObFEpLqqY3h
+cRkNnRsr7JXd13pf
+wXGa32rzBRhQvEju
+40nbittRWxZpp68X
+a0tdUeayzFGbSQP6
+aPBdxNmxZqEEsOdU
+PZqnWmEQMJGUXU7D
+BEjpxwSIgNBjjOx5
+yue1r089ooEtbjR2
+9EOX4M9BIfNSUNgD
+A98OW38gvetQSx8O
+8vupWc7zl9xXuSHb
+LvbvTjyvMzqkKL1g
+3JEHgWKDOZRKjjZ4
+CRdWMMqW13DIJN3S
+B50xR9tKEBzKefpj
+K449LQrkbMl7S9g2
+hV0bsIFO1VUNbS6r
+eEghoCzf4MXcpPsm
+YF4gjsRSfK6yvTN7
+d2PxN1ljwf3o5gYQ
+hcEHq7cg5cNW4Ht8
+oQ3Dc8uHCNpvm6ra
+0Kgm1Z4m7IwVRZtm
+tqMev3HesI615DbB
+HOpHRrcGODnW422X
+ngJTgn70Z0xVQ3Im
+L460b7lfBUYCzWct
+9DdQiDNBv5ODNf6G
+YDnCTlR3p5bsVzFI
+uH2Kf9DNEZbAPBoh
+uQrBdHOPN2FgD3aB
+dTso8hKSxElUUjlk
+f5cZ8ME885ik2q13
+JOf0JjZy9HeM5sjL
+d1VoRdDsIee41lOs
+aB91dViSHt8faf2N
+gj2BECrSmgbgDLpZ
+OJ4MXGSfWoKUWqVk
+u1yRx6f2KB7zHJyq
+eE8qKbPMs62pl4Gj
+fIkVHi6XLnzT1t7E
+89cEgBd8rqiMas2a
+ZGIqWFXe75GAIavb
+fdpMw31mkxLZQGxX
+T5bziPHiQ0OU8J87
+qr7lgtjlKu5X9uwp
+PmXS29UfnLDyIOv7
+GSI8ydaUIcArJfaz
+Qp4nMETF6pF3KuLg
+8Lkrh4EgrNPTqeZD
+Jo6Z1rzrs4VlkyhK
+CiBnRJz7rgW2sZKq
+kjDB8Alw2c9LRlLI
+Zo8UpAGMoYqGRy1V
+zjKuEXNb2mbhz7dl
+j4PTo1SqWMwdYskZ
+w0YqYzMVd0UMkBpr
+SvI6jt13NQfctcbd
+bWHdtQ2eiP0XYbiL
+pA3XwnuRfYtpqQEp
+opjOjIQ9ishGP0mL
+kQOdxQunp6Aj82QM
+wh5mAkdEHlNCzJGV
+erS0KU0LexlHNErk
+CJp2rMkh4i05bXCw
+z6M8YzQcffrUysiu
+3BSRJ6S8fh9rKGGx
+Dl9MWol7MIsFXyFH
+RL5fA9d422NbPig7
+4Gt2yoeUAduYPYki
+1dnN5UCZBCQC5ces
+UVDtNQkBldYAjRFP
+0dc12BVFDptDDGkA
+7jwVFPOJwcDIyi6s
+PNEDY6kGKZHgB8S5
+Id80eDlByXE8fBXx
+mtDjSBatDSKQNVZR
+H1cL7fOAwIovkOeR
+ILEQ4tyiAgh9eleN
+gKNAWH9QPMkpG7Rh
+MNOVejmxwpXXmPYQ
+ByyLJsNQ6t7DA4xr
+iV332lF8zD1Dy42O
+m9doSYSmELe4VhOO
+aLhvSwZkrTWGSZSx
+9BKisIbomL04iDrM
+IM635ILK1ghcWC55
+Vsse6tT0Pvm7bHqr
+WMeNAbILAV2fqXcR
+TIwUsSyz4GxvcTSq
+VZYTdfqmnjxF1wUR
+3uL2Jb4Lt54Pj7IE
+LYYqWKJ1Blmwa5MV
+mnnKo2exqJfLREcm
+fpt34BPZ2K4Gf9en
+2t2UqNvEYaHvE9hF
+SRNbeWkksvuW8nZF
+SENXpLOGiTzCTC8F
+WZAYKB2MnbnCIXFI
+eKL2DfOoUSm7MuLV
+KJ8zcj2jDZtYfr77
+fXglpWj99JxRoGs0
+RreSJbxoGnRkiiZ5
+N68bQkJz8BzUoEPl
+qBcJ78w2kwB6TPqN
+pF8tw7i9Kww5j5EZ
+WN7YvxemP1eK65hC
+J1RMI7qqQbhItlJy
+1noUv8FNghpRkl2f
+82jiZr3UPKoaJug9
+BUHwHmK13eOhOup8
+tiflUQVOtWIp800Q
+ysHhOkDaAivCMpiX
+1Te1WCa7TFmG32xI
+Vwx5DIMyzSXxfbpt
+Co8KmDhClJXB7gBY
+57mJnn14FNtJSVyv
+Yae3WAHn4J6wx2s6
+ksfrZ7mKZUqfBQxd
+6gbP3pUmZqwCy1EW
+P2zVU0iPxdb257Hr
+g00myPmyUBgSWCY2
+8c2HSarvPwD17Yed
+RVe99a0ZeNglH61T
+ovuNfB02Vf3LITlR
+3iBqjC36m3eV0Fi0
+OeX4G8JWMQLoRzNX
+60oOKpFGgxC7NTcN
+cFQVN4Pbu2BUpkcO
+3QlxK8sK12FUG5HT
+osq4rkWrswbNxepV
+aGEHTUfCNCmCGkNE
+Hwxn1P7rK0yG1ARj
+d18kbMeFNZQb6ABF
+une3hvenpkLOxeeM
+7IDm89xE48WeVwxr
+DNSuE2rbmAc8B6JE
+unHwiZP36Trg1h53
+bbH43aRjN2baNX8n
+VuBLsnkk304V6hU2
+lHHnyEqK2Nh5U5uL
+MYop0Yz0KC5d7EwO
+P1neuvPf4lV7zUYL
+UyfcPm9nWEceLYnr
+dJuK3FK2wzdDEwqU
+B8PnDxbthfGNqWNV
+12309812038912",1,1,N/A,tes,N/A,1521092740,1099570908,https://databento.monday.com/boards/1029994357/pulses/1521092740,https://databento.monday.com/boards/1029994357/pulses/1521092740/posts/1099570908
+2021-07-27 15:06:04.035833,chelsea,chelsea,UMDU6FCDT,Platform,asdfads,2,5,N/A,asdfads,N/A,1521098253,1099573366,https://databento.monday.com/boards/1029994357/pulses/1521098253,https://databento.monday.com/boards/1029994357/pulses/1521098253/posts/1099573366
